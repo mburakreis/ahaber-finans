@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AHaber Finans — Türkiye'nin Finans Portalı</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--red:#E30613;--bg-dark:#0F1117;--surface-dark:#1A1D26;--surface:#fff;--surface-alt:#F5F6F8;--text:#1A1A1A;--text2:#6B7280;--meta:#9CA3AF;--text-light:#F0F0F0;--pos:#10B981;--neg:#EF4444;--blue:#3B82F6;--border:#E5E7EB;--border-dark:#2A2D37}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:#fff;color:var(--text);-webkit-font-smoothing:antialiased;line-height:1.6}
+.ctr{max-width:1280px;margin:0 auto;padding:0 16px}
+.tn{font-variant-numeric:tabular-nums lining-nums}
+a{text-decoration:none;color:inherit}
+
+/* Animations */
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.5)}}
+@keyframes tickScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+/* Pulse dot */
+.pulse-dot{display:inline-block;border-radius:50%;background:var(--red);animation:pulse 2s ease-out infinite}
+
+/* Section header */
+.sec-hdr{display:flex;justify-content:space-between;align-items:center;padding-bottom:16px;margin-bottom:32px;border-bottom:1px solid var(--border)}
+.sec-hdr h2{font-size:28px;font-weight:600;border-left:3px solid var(--red);padding-left:12px;line-height:1.2}
+.sec-hdr a{font-size:14px;font-weight:500;color:var(--blue)}
+.sec-hdr a:hover{text-decoration:underline}
+
+/* Live indicator */
+.live{display:inline-flex;align-items:center;gap:6px}
+.live .pulse-dot{width:8px;height:8px}
+.live span{font-size:11px;font-weight:700;color:var(--neg);letter-spacing:.5px}
+
+/* Data badge */
+.badge-pos{display:inline-flex;align-items:center;gap:4px;background:#ECFDF5;color:var(--pos);padding:4px 8px;border-radius:4px;font-size:13px;font-weight:600}
+.badge-neg{display:inline-flex;align-items:center;gap:4px;background:#FEF2F2;color:var(--neg);padding:4px 8px;border-radius:4px;font-size:13px;font-weight:600}
+
+/* Category badges */
+.cat{display:inline-block;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;padding:3px 8px;border-radius:4px}
+.cat-borsa{background:#EFF6FF;color:#3B82F6}.cat-ekonomi{background:#F3F4F6;color:#4B5563}
+.cat-altin{background:#FFFBEB;color:#D97706}.cat-kripto{background:#F5F3FF;color:#7C3AED}
+.cat-doviz{background:#ECFDF5;color:#059669}.cat-emtia{background:#ECFDF5;color:#059669}
+
+/* ═══ HEADER ═══ */
+.hdr{position:sticky;top:0;z-index:1000;transition:box-shadow .3s}
+.hdr.scrolled{box-shadow:0 4px 24px rgba(0,0,0,.5)}
+.hdr-util{background:#080A0F;height:32px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:12px;color:#9CA3AF;border-bottom:1px solid rgba(255,255,255,.04);overflow:hidden;transition:height .3s,opacity .3s}
+.hdr.scrolled .hdr-util{height:0;opacity:0;border:none}
+.hdr-nav{background:var(--bg-dark);height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;border-bottom:1px solid rgba(255,255,255,.06);transition:height .3s}
+.hdr.scrolled .hdr-nav{height:48px}
+.hdr-logo{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.hdr-logo-mark{width:34px;height:34px;background:var(--red);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#fff}
+.hdr-logo-text{font-size:18px;font-weight:700;color:#fff}
+.hdr-logo-text b{color:var(--red)}
+.nav-links{display:flex;align-items:center;gap:24px;margin-left:40px}
+.nav-link{position:relative;background:none;border:none;color:rgba(255,255,255,.7);font-family:inherit;font-size:14px;font-weight:500;cursor:pointer;padding:8px 0;transition:color .2s;white-space:nowrap}
+.nav-link:hover,.nav-link.active{color:#fff}
+.nav-link::after{content:'';position:absolute;bottom:-2px;left:0;width:0;height:3px;background:var(--red);border-radius:2px 2px 0 0;transition:width .25s}
+.nav-link.active::after,.nav-link:hover::after{width:100%}
+.nav-right{display:flex;align-items:center;gap:8px}
+.search-btn{background:none;border:none;color:rgba(255,255,255,.7);cursor:pointer;padding:8px;border-radius:6px;transition:all .2s;display:flex;align-items:center}
+.search-btn:hover{color:#fff;background:rgba(255,255,255,.06)}
+.live-tv-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(227,6,19,.15);border:1px solid rgba(227,6,19,.4);color:#F0F0F0;font-family:inherit;font-size:12px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;padding:6px 12px;border-radius:6px;cursor:pointer;transition:all .2s}
+.live-tv-btn:hover{background:rgba(227,6,19,.3);border-color:rgba(227,6,19,.6)}
+.hamburger{display:none;background:none;border:none;color:#fff;cursor:pointer;padding:8px}
+
+/* Ticker */
+.ticker{background:#0A0C10;height:46px;overflow:hidden;position:relative;border-bottom:1px solid var(--border-dark)}
+.ticker::before,.ticker::after{content:'';position:absolute;top:0;bottom:0;width:48px;z-index:2;pointer-events:none}
+.ticker::before{left:0;background:linear-gradient(to right,#0A0C10,transparent)}
+.ticker::after{right:0;background:linear-gradient(to left,#0A0C10,transparent)}
+.ticker-track{display:inline-flex;align-items:center;height:100%;animation:tickScroll 35s linear infinite}
+.ticker-track.paused{animation-play-state:paused}
+.ticker-item{display:inline-flex;align-items:center;gap:10px;padding:0 20px;height:100%;border-right:1px solid rgba(255,255,255,.07);white-space:nowrap}
+.ticker-sym{font-size:12px;font-weight:700;color:rgba(255,255,255,.6);letter-spacing:.2px}
+.ticker-price{font-size:14px;font-weight:700;color:#fff}
+.ticker-chg{font-size:12px;font-weight:600}
+
+/* ═══ HERO ═══ */
+.hero{background:#fff;padding:32px 0 48px}
+.hero-grid{display:grid;grid-template-columns:1fr 380px;gap:24px}
+.hero-primary{position:relative;border-radius:12px;overflow:hidden;cursor:pointer;transition:all .3s;aspect-ratio:16/9}
+.hero-primary:hover{transform:scale(1.008);box-shadow:0 16px 40px rgba(0,0,0,.25)}
+.hero-primary-bg{position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1200&q=80&fit=crop') center/cover no-repeat}
+.hero-primary-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.88),rgba(0,0,0,.4) 40%,transparent 70%)}
+.hero-primary-content{position:absolute;bottom:0;left:0;right:0;padding:24px}
+.hero-primary h3{font-size:32px;font-weight:700;color:#fff;line-height:1.25;margin:8px 0}
+.hero-primary .excerpt{font-size:15px;color:rgba(255,255,255,.75);line-height:1.5;margin-bottom:8px}
+.hero-primary .meta{font-size:13px;color:rgba(255,255,255,.6)}
+.hero-secondary{display:flex;flex-direction:column;gap:16px}
+.hero-sec-card{display:flex;border-radius:8px;border:1px solid var(--border);overflow:hidden;cursor:pointer;transition:all .2s;background:#fff}
+.hero-sec-card:hover{background:var(--surface-alt);border-left:3px solid var(--red)}
+.hero-sec-img{width:40%;min-height:110px;flex-shrink:0}
+.hero-sec-text{padding:12px 16px;flex:1;display:flex;flex-direction:column;justify-content:center}
+.hero-sec-text h4{font-size:16px;font-weight:600;color:var(--text);line-height:1.4;margin:6px 0 4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.hero-sec-text .meta{font-size:13px;color:var(--meta)}
+
+/* Son Dakika Strip — full-width dark bar between hero and content */
+.son-dakika-strip{background:#0F1117;height:46px;display:flex;align-items:center;overflow:hidden;position:relative}
+.son-dakika-strip .sdk-badge{display:flex;align-items:center;gap:8px;padding:0 20px;background:var(--red);color:#fff;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;height:100%;white-space:nowrap;flex-shrink:0;z-index:2}
+.son-dakika-strip .sdk-scroll{flex:1;overflow:hidden;position:relative;height:100%;display:flex;align-items:center}
+.son-dakika-strip .sdk-scroll::before,.son-dakika-strip .sdk-scroll::after{content:'';position:absolute;top:0;bottom:0;width:32px;z-index:2;pointer-events:none}
+.son-dakika-strip .sdk-scroll::before{left:0;background:linear-gradient(to right,#0F1117,transparent)}
+.son-dakika-strip .sdk-scroll::after{right:0;background:linear-gradient(to left,#0F1117,transparent)}
+.son-dakika-strip .sdk-track{display:inline-flex;white-space:nowrap;animation:marquee 40s linear infinite}
+.son-dakika-strip:hover .sdk-track,.son-dakika-strip .sdk-track.paused{animation-play-state:paused}
+.son-dakika-strip .sdk-item{font-size:14px;font-weight:500;color:#F0F0F0;padding:0 16px;display:inline-flex;align-items:center;gap:16px}
+.son-dakika-strip .sdk-item::after{content:'';display:inline-block;width:4px;height:4px;border-radius:50%;background:var(--red);margin-left:16px;flex-shrink:0}
+
+/* ═══ PIYASA OZETI ═══ */
+.piyasa{background:#fff;padding:48px 0}
+.market-scroll{display:flex;gap:16px;overflow-x:auto;padding-bottom:8px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.market-scroll::-webkit-scrollbar{display:none}
+.market-card{min-width:200px;flex:1;background:#fff;border:1px solid var(--border);border-radius:12px;padding:20px;scroll-snap-align:start;transition:all .25s;cursor:pointer}
+.market-card:hover{border-color:var(--blue);box-shadow:0 4px 16px rgba(0,0,0,.08)}
+.market-label{font-size:13px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.market-val{font-size:24px;font-weight:700;color:var(--text);margin-bottom:6px}
+.range-bar{margin-top:12px}
+.range-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--meta);margin-bottom:6px}
+.range-track{position:relative;height:4px;background:#E5E7EB;border-radius:2px}
+.range-dot{position:absolute;top:50%;width:10px;height:10px;border-radius:50%;transform:translate(-50%,-50%)}
+
+/* Market movers */
+.movers-section{display:grid;grid-template-columns:1fr 340px;gap:24px;margin-top:32px}
+.movers-card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:24px}
+.tab-bar{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:16px}
+.tab-btn{padding:10px 16px;background:none;border:none;border-bottom:2px solid transparent;color:var(--text2);font-family:inherit;font-size:14px;font-weight:500;cursor:pointer;transition:all .2s;white-space:nowrap}
+.tab-btn.active{color:var(--text);font-weight:600;border-bottom-color:var(--red)}
+.tab-btn:hover{color:var(--text)}
+.mover-row{display:grid;grid-template-columns:24px 72px auto 60px 1fr;align-items:center;padding:10px 8px;border-bottom:1px solid var(--border);gap:8px}
+.mover-row:last-child{border-bottom:none}
+.mover-rank{font-size:14px;font-weight:700;color:var(--meta)}
+.mover-sym{font-size:14px;font-weight:700}
+.mover-price{font-size:14px;color:var(--text2)}
+.accent-bar{border-left:3px solid;padding-left:8px}
+.tab-panel{display:none}.tab-panel.active{display:block}
+
+/* Ekonomik Takvim widget */
+.eco-card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:24px;display:flex;flex-direction:column}
+.eco-title{display:flex;align-items:center;gap:8px;font-size:18px;font-weight:600;margin-bottom:16px}
+.eco-event{display:flex;align-items:flex-start;gap:12px;padding:14px 0;border-bottom:1px solid var(--border);transition:background .15s;cursor:pointer;border-radius:4px}
+.eco-event:last-child{border-bottom:none}
+.eco-event:hover{background:var(--surface-alt)}
+.eco-imp{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:6px}
+.eco-event-name{font-size:14px;font-weight:600;color:var(--text);line-height:1.3}
+.eco-event-date{font-size:13px;color:var(--text2);margin-top:2px}
+.eco-event-imp{font-size:12px;margin-top:1px}
+
+/* ═══ ANA HABERLER ═══ */
+.ana-haberler{background:var(--surface-alt);padding:48px 0}
+.news-grid{display:grid;grid-template-columns:1fr 380px;gap:32px;align-items:start}
+.news-grid aside{position:sticky;top:120px}
+.large-card{display:flex;border-radius:12px;border:1px solid var(--border);overflow:hidden;cursor:pointer;transition:box-shadow .3s;background:#fff}
+.large-card:hover{box-shadow:0 8px 28px rgba(0,0,0,.09)}
+.large-card-img{width:45%;min-height:280px;flex-shrink:0;background:url('https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=800&q=80&fit=crop') center/cover no-repeat}
+.large-card-body{flex:1;padding:24px;display:flex;flex-direction:column;justify-content:center}
+.large-card-body h3{font-size:22px;font-weight:600;line-height:1.35;margin:12px 0 10px}
+.large-card-body .excerpt{font-size:15px;color:var(--text2);line-height:1.6;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.medium-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:24px}
+.med-card{border-radius:8px;border:1px solid var(--border);overflow:hidden;cursor:pointer;transition:all .25s;background:#fff}
+.med-card:hover{box-shadow:0 4px 12px rgba(0,0,0,.08)}
+.med-card-img{height:180px;position:relative;overflow:hidden}
+.med-card-img .img-bg{width:100%;height:100%;transition:transform .3s ease}
+.med-card:hover .img-bg{transform:scale(1.03)}
+.med-card-body{padding:16px}
+.med-card-body .cat{margin-bottom:8px}
+.med-card-body h4{font-size:16px;font-weight:600;line-height:1.4;color:var(--text);margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.med-card-body .excerpt{font-size:14px;color:var(--text2);line-height:1.5;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+/* Sidebar */
+.sidebar-title{display:flex;align-items:center;gap:8px;font-size:18px;font-weight:600;margin-bottom:4px;padding-bottom:12px;border-bottom:2px solid var(--red)}
+.most-read-item{display:flex;gap:14px;padding:14px 8px;cursor:pointer;border-bottom:1px solid var(--border);transition:background .2s;border-radius:4px}
+.most-read-item:hover{background:var(--surface-alt)}
+.most-read-rank{font-size:26px;font-weight:700;color:var(--red);opacity:.55;min-width:28px}
+.most-read-text p{font-size:15px;font-weight:500;line-height:1.4;margin-bottom:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.editor-pick{display:flex;gap:12px;padding:12px 4px;cursor:pointer;border-bottom:1px solid var(--border);transition:background .2s;border-radius:4px}
+.editor-pick:hover{background:var(--surface-alt)}
+.editor-thumb{width:56px;height:56px;border-radius:6px;flex-shrink:0}
+
+/* ═══ OZEL HABER ═══ */
+.ozel{background:var(--surface-dark);padding:64px 0;position:relative;background-image:radial-gradient(circle,rgba(255,255,255,.03) 1px,transparent 1px);background-size:24px 24px}
+.ozel-grid{display:grid;grid-template-columns:55% 45%;gap:0}
+.ozel-img{min-height:420px;border-radius:12px;background:url('https://images.unsplash.com/photo-1518709766631-a6a7f45921c3?w=1200&q=80&fit=crop') center/cover no-repeat;box-shadow:inset 0 0 60px rgba(0,0,0,.4)}
+.ozel-content{padding-left:40px;display:flex;flex-direction:column;justify-content:center}
+.ozel-badge{display:inline-block;background:var(--red);color:#fff;font-size:12px;font-weight:700;text-transform:uppercase;padding:5px 14px;border-radius:4px;box-shadow:0 0 20px rgba(227,6,19,.3);width:fit-content}
+.ozel-content h3{font-size:32px;font-weight:700;color:var(--text-light);line-height:1.3;margin:16px 0}
+.ozel-content .excerpt{font-size:16px;color:rgba(255,255,255,.7);line-height:1.7}
+.ozel-content .author{font-size:14px;color:rgba(255,255,255,.5);margin-top:24px}
+.ozel-cta{display:inline-block;margin-top:32px;border:1px solid rgba(255,255,255,.4);color:#fff;padding:12px 28px;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;transition:all .25s;background:none;font-family:inherit;width:fit-content}
+.ozel-cta:hover{background:var(--red);border-color:var(--red)}
+.ozel-related{margin-top:48px;display:flex;gap:24px}
+.ozel-related-label{font-size:13px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:16px;letter-spacing:.5px}
+.ozel-rel-item{flex:1;display:flex;gap:12px;cursor:pointer;transition:opacity .2s}
+.ozel-rel-item:hover{opacity:.85}
+.ozel-rel-thumb{width:80px;height:56px;border-radius:8px;flex-shrink:0}
+.ozel-rel-item h5{font-size:14px;color:var(--text-light);line-height:1.4;margin-bottom:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ozel-rel-item .meta{font-size:12px;color:rgba(255,255,255,.4)}
+
+/* ═══ CEVIRICI ═══ */
+.cevirici{background:#fff;padding:48px 0}
+.conv-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.conv-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:32px}
+.conv-title{font-size:22px;font-weight:600;margin-bottom:20px;display:flex;align-items:center;gap:8px}
+.conv-row{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.conv-input{flex:1;height:48px;border:1px solid var(--border);border-radius:8px;padding:0 16px;font-size:18px;font-family:inherit;outline:none;transition:all .2s;background:var(--surface-alt)}
+.conv-input:focus{border-color:var(--blue);background:#fff;box-shadow:0 0 0 3px rgba(59,130,246,.13)}
+.conv-result{flex:1;height:48px;border:1px solid var(--border);border-radius:8px;padding:0 16px;font-size:18px;font-weight:700;font-family:inherit;background:#F0F7FF;display:flex;align-items:center;color:var(--text)}
+.conv-select{width:100%;height:40px;border:1px solid var(--border);border-radius:8px;padding:0 12px;font-family:inherit;font-size:13px;background:#fff;cursor:pointer;outline:none;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+.swap-btn{width:44px;height:44px;border-radius:50%;background:var(--red);border:none;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .3s;box-shadow:0 2px 8px rgba(227,6,19,.3);flex-shrink:0}
+.swap-btn:hover{transform:rotate(180deg)}
+.quick-pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.quick-pill{padding:6px 12px;border-radius:16px;background:var(--surface-alt);font-size:13px;border:none;cursor:pointer;font-family:inherit;transition:all .2s}
+.quick-pill:hover{background:#E5E7EB}
+.preset-btn{padding:6px 12px;border-radius:20px;border:1px solid var(--border);background:#fff;font-size:13px;cursor:pointer;font-family:inherit;transition:all .2s}
+.preset-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.rate-table{width:100%;margin-top:16px;border-collapse:collapse;font-size:13px}
+.rate-table th{text-align:left;padding:8px;color:var(--text2);font-weight:600;border-bottom:1px solid var(--border)}
+.rate-table td{padding:8px;border-bottom:1px solid var(--border)}
+
+/* ═══ KATEGORI ═══ */
+.kategori{background:var(--surface-alt);padding:48px 0}
+.cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 24px}
+.cat-item{display:flex;gap:12px;padding:12px 4px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s}
+.cat-item:hover{background:var(--surface-alt)}
+.cat-thumb{width:72px;height:54px;border-radius:8px;flex-shrink:0}
+.cat-item-text{flex:1;min-width:0}
+.cat-item-text p{font-size:15px;font-weight:500;line-height:1.4;margin:4px 0 2px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.cat-panel{display:none;animation:fadeIn .2s ease}.cat-panel.active{display:grid}
+
+/* ═══ BIST ═══ */
+.bist{background:var(--surface-alt);padding:48px 0}
+.heatmap{display:grid;grid-template-columns:repeat(6,1fr);grid-auto-rows:45px;gap:3px}
+.hm-cell{border-radius:4px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:filter .2s}
+.hm-cell:hover{filter:brightness(1.15)}
+.hm-cell span:first-child{font-size:11px;font-weight:700}
+.hm-cell span:last-child{font-size:10px;opacity:.8}
+.stock-table{width:100%;border-collapse:collapse}
+.stock-table th{text-align:left;padding:10px 16px;background:var(--surface-alt);font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;border-bottom:1px solid var(--border)}
+.stock-table td{padding:12px 16px;border-bottom:1px solid var(--border);font-size:14px}
+.stock-table tr{transition:background .15s;cursor:pointer}
+.stock-table tbody tr:nth-child(odd){background:#fff}
+.stock-table tbody tr:nth-child(even){background:#FAFAFA}
+.stock-table tbody tr:hover{background:#F0F7FF}
+.stock-code{font-weight:700}.stock-name{font-size:12px;color:var(--meta)}
+.search-input{height:36px;padding:0 12px 0 32px;border:1px solid var(--border);border-radius:8px;background:var(--surface-alt);font-size:13px;font-family:inherit;outline:none;width:180px}
+
+/* ═══ KAP ═══ */
+.kap{background:var(--surface-alt);padding:48px 0}
+.kap-card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:24px;overflow:hidden}
+.kap-pills{display:flex;flex-wrap:wrap;gap:8px;padding-bottom:16px;margin-bottom:16px;border-bottom:1px solid var(--border)}
+.kap-pill{padding:6px 12px;border-radius:20px;border:1px solid var(--border);background:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s;color:var(--text)}
+.kap-pill:hover{border-color:var(--blue);color:var(--blue)}
+.kap-pill.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.kap-feed{max-height:480px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#9CA3AF #D1D5DB}
+.kap-feed::-webkit-scrollbar{width:6px}
+.kap-feed::-webkit-scrollbar-track{background:#D1D5DB;border-radius:3px}
+.kap-feed::-webkit-scrollbar-thumb{background:#9CA3AF;border-radius:3px}
+.kap-row{display:grid;grid-template-columns:10px 52px 64px auto 1fr;align-items:center;gap:12px;padding:12px 8px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s;border-radius:4px}
+.kap-row:last-child{border-bottom:none}
+.kap-row:hover{background:var(--surface-alt)}
+.kap-imp{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.kap-time{font-size:13px;color:var(--text2);font-variant-numeric:tabular-nums lining-nums;white-space:nowrap}
+.kap-code{font-size:12px;font-weight:700;color:var(--text);cursor:pointer;transition:color .15s;letter-spacing:.2px}
+.kap-code:hover{color:var(--blue)}
+.kap-tag{display:inline-block;font-size:11px;font-weight:600;padding:3px 8px;border-radius:4px;white-space:nowrap;letter-spacing:.2px}
+.kap-headline{font-size:14px;font-weight:500;color:var(--text);line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kap-footer{display:flex;align-items:center;gap:8px;padding-top:16px;margin-top:16px;border-top:1px solid var(--border);font-size:13px;color:var(--text2)}
+
+/* ═══ CRYPTO ═══ */
+.crypto{background:#fff;padding:48px 0}
+.crypto-table{width:100%;border-collapse:collapse}
+.crypto-table th{text-align:left;padding:10px 16px;background:#F5F6F8;font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;border-bottom:1px solid var(--border);cursor:pointer}
+.crypto-table td{padding:14px 16px;border-bottom:1px solid var(--border)}
+.crypto-table tbody tr:nth-child(odd){background:#fff}
+.crypto-table tbody tr:nth-child(even){background:#FAFAFA}
+.crypto-table tbody tr:hover{background:#F0F7FF}
+.crypto-icon{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff}
+
+/* ═══ SEO ═══ */
+.seo{background:var(--surface-alt);padding:40px 0 48px}
+.seo-text{position:relative;overflow:hidden;transition:max-height .4s ease}
+.seo-text.collapsed{max-height:80px}
+.seo-fade{position:absolute;bottom:0;left:0;right:0;height:40px;background:linear-gradient(transparent,#F5F6F8)}
+.seo-toggle{display:block;margin:8px auto 0;background:none;border:none;color:var(--blue);font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;padding:8px 16px}
+
+/* ═══ FOOTER ═══ */
+.footer{background:var(--surface-dark);padding:64px 0 32px;color:var(--text-light)}
+.footer-cols{display:grid;grid-template-columns:repeat(4,1fr);gap:32px;margin-bottom:40px}
+.footer-col-title{font-size:14px;font-weight:700;text-transform:uppercase;margin-bottom:20px;letter-spacing:.5px}
+.footer-link{display:block;font-size:13px;color:rgba(255,255,255,.55);line-height:2.2;transition:all .2s;cursor:pointer}
+.footer-link:hover{color:rgba(255,255,255,.9);transform:translateX(2px)}
+.footer-brands{border-top:1px solid rgba(255,255,255,.08);padding-top:24px;margin-bottom:24px;text-align:center;font-size:13px;color:rgba(255,255,255,.4)}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+.social-icons{display:flex;gap:8px}
+.social-icon{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:600;transition:background .2s;cursor:pointer}
+.social-icon:hover{background:var(--red)}
+.copyright{font-size:12px;color:rgba(255,255,255,.4)}
+.disclaimer{text-align:center;margin-top:16px;font-size:11px;color:rgba(255,255,255,.25)}
+
+/* ═══ MOBILE DRAWER ═══ */
+.drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9998;opacity:0;pointer-events:none;transition:opacity .3s}
+.drawer-overlay.open{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:280px;background:var(--bg-dark);z-index:9999;transform:translateX(100%);transition:transform .3s;padding:24px;border-left:1px solid var(--border-dark)}
+.drawer.open{transform:translateX(0)}
+.drawer-close{background:none;border:none;color:rgba(255,255,255,.6);font-size:24px;cursor:pointer;position:absolute;top:16px;right:16px}
+.drawer-link{display:block;color:rgba(255,255,255,.75);font-size:16px;font-weight:500;padding:14px 0;border-bottom:1px solid var(--border-dark);cursor:pointer}
+.drawer-link:hover,.drawer-link.active{color:#fff}
+
+/* ═══ BOTTOM BAR ═══ */
+.bottom-bar{display:none;position:fixed;bottom:0;left:0;right:0;height:56px;background:#fff;border-top:1px solid var(--border);z-index:100;box-shadow:0 -2px 8px rgba(0,0,0,.08);padding-bottom:env(safe-area-inset-bottom)}
+.bottom-tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:none;border:none;color:var(--text2);font-size:10px;font-family:inherit;cursor:pointer}
+.bottom-tab.active{color:var(--red)}
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:767px){
+  .hdr-util{display:none!important}
+  .hdr-nav{padding:0 16px;height:52px!important}
+  .nav-links,.nav-right{display:none!important}
+  .hamburger{display:flex!important}
+  .ticker{height:42px}.ticker-item{padding:0 14px;gap:8px}
+  .hero-grid{grid-template-columns:1fr;gap:16px}
+  .hero-primary{aspect-ratio:4/3}.hero-primary h3{font-size:24px}
+  .hero-sec-card{flex-direction:column}.hero-sec-img{width:100%;min-height:80px}
+  .news-grid{grid-template-columns:1fr;gap:32px}
+  .medium-grid{grid-template-columns:1fr}
+  .large-card{flex-direction:column}.large-card-img{width:100%;min-height:200px}
+  .ozel-grid{grid-template-columns:1fr;gap:24px}
+  .ozel-img{min-height:200px;order:-1;border-radius:12px 12px 0 0}
+  .ozel-content{padding:24px 0 0}
+  .ozel-content h3{font-size:24px}
+  .ozel-related{flex-direction:column;gap:16px}
+  .conv-grid{grid-template-columns:1fr}
+  .cat-grid{grid-template-columns:1fr!important}
+  .kap-row{grid-template-columns:10px 48px 56px 1fr;gap:8px}
+  .kap-tag{display:none}
+  .kap-feed{max-height:360px!important}
+  .movers-section{grid-template-columns:1fr}
+  .heatmap{grid-template-columns:repeat(4,1fr)!important}
+  .footer-cols{grid-template-columns:1fr 1fr}
+  .footer-bottom{flex-direction:column;text-align:center}
+  .hide-mobile{display:none!important}
+  .bottom-bar{display:flex!important}
+  body{padding-bottom:80px}
+  .crypto-table .hide-m,.stock-table .hide-m{display:none!important}
+}
+@media(min-width:768px){
+  .hamburger{display:none!important}
+  .drawer,.drawer-overlay{display:none!important}
+  .bottom-bar{display:none!important}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<header class="hdr" id="header">
+  <div class="hdr-util">
+    <span>31 Mart 2026, Pazartesi</span>
+    <div style="display:flex;align-items:center;gap:16px">
+      <span style="display:inline-flex;align-items:center;gap:6px;cursor:pointer"><span class="pulse-dot" style="width:5px;height:5px"></span> A Para Canlı</span>
+      <span style="display:inline-flex;align-items:center;gap:4px"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--pos);margin-right:4px"></span>Borsa İstanbul: <b style="color:var(--pos);margin-left:3px">Açık</b></span>
+    </div>
+  </div>
+  <nav class="hdr-nav">
+    <div class="hdr-logo"><div class="hdr-logo-mark">A</div><span class="hdr-logo-text">Haber <b>Finans</b></span></div>
+    <div class="nav-links" id="navLinks">
+      <button class="nav-link active" data-nav="Borsa">Borsa</button>
+      <button class="nav-link" data-nav="Döviz">Döviz</button>
+      <button class="nav-link" data-nav="Altın">Altın</button>
+      <button class="nav-link" data-nav="Kripto Para">Kripto Para</button>
+      <button class="nav-link" data-nav="Haberler">Haberler</button>
+      <button class="nav-link" data-nav="Araçlar">Araçlar</button>
+    </div>
+    <div style="flex:1"></div>
+    <div class="nav-right">
+      <button class="search-btn" aria-label="Ara"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></button>
+      <button class="live-tv-btn"><span class="pulse-dot" style="width:6px;height:6px"></span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"/><path d="M14.5 9.5a5 5 0 0 1 0 5"/><path d="M17 7a8 8 0 0 1 0 10"/><path d="M9.5 14.5a5 5 0 0 1 0 -5"/><path d="M7 17a8 8 0 0 1 0 -10"/></svg> CANLI TV</button>
+    </div>
+    <button class="hamburger" id="hamburgerBtn" aria-label="Menü"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l16 0"/><path d="M4 12l16 0"/><path d="M4 18l16 0"/></svg></button>
+  </nav>
+  <div class="ticker" id="tickerStrip"><div class="ticker-track" id="tickerTrack"></div></div>
+</header>
+
+<!-- Mobile Drawer -->
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<div class="drawer" id="drawer">
+  <button class="drawer-close" id="drawerClose"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6l-12 12"/><path d="M6 6l12 12"/></svg></button>
+  <div style="margin-top:40px">
+    <a class="drawer-link active">Borsa</a><a class="drawer-link">Döviz</a><a class="drawer-link">Altın</a>
+    <a class="drawer-link">Kripto Para</a><a class="drawer-link">Haberler</a><a class="drawer-link">Araçlar</a>
+    <div style="margin-top:20px;display:flex;align-items:center;gap:8px"><span class="pulse-dot" style="width:7px;height:7px"></span><span style="color:#fff;font-size:13px;font-weight:700">CANLI TV</span></div>
+  </div>
+</div>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="ctr">
+    <div class="hero-grid">
+      <div class="hero-primary">
+        <div class="hero-primary-bg"></div>
+        <div class="hero-primary-overlay"></div>
+        <div class="hero-primary-content">
+          <span class="cat cat-ekonomi">EKONOMİ</span>
+          <h3>Merkez Bankası Faiz Kararı Piyasaları Hareketlendirdi: BIST 100'de Sert Yükseliş</h3>
+          <p class="excerpt">Merkez Bankası'nın beklentilerin üzerinde gelen faiz kararı sonrası Borsa İstanbul'da güçlü alımlar yaşandı.</p>
+          <span class="meta">2 saat önce · Ahmet Yılmaz</span>
+        </div>
+      </div>
+      <div class="hero-secondary">
+        <div class="hero-sec-card"><div class="hero-sec-img" style="background:url('https://images.unsplash.com/photo-1610375461246-83df859d849d?w=600&q=80&fit=crop') center/cover no-repeat"></div><div class="hero-sec-text"><span class="cat cat-altin">ALTIN</span><h4>Gram Altın 3.250 TL'yi Aştı: Ons Altında Rekor Beklentisi</h4><span class="meta">3 saat önce</span></div></div>
+        <div class="hero-sec-card"><div class="hero-sec-img" style="background:url('https://images.unsplash.com/photo-1580519542036-c47de6196ba5?w=600&q=80&fit=crop') center/cover no-repeat"></div><div class="hero-sec-text"><span class="cat cat-doviz">DÖVİZ</span><h4>Dolar/TL'de Kritik Seviye: Uzmanlar 39 TL'yi İşaret Ediyor</h4><span class="meta">4 saat önce</span></div></div>
+        <div class="hero-sec-card"><div class="hero-sec-img" style="background:url('https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=600&q=80&fit=crop') center/cover no-repeat"></div><div class="hero-sec-text"><span class="cat cat-kripto">KRİPTO</span><h4>Bitcoin 2.8 Milyon TL'yi Gördü: Kurumsal Yatırımcı İlgisi Artıyor</h4><span class="meta">5 saat önce</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SON DAKİKA STRIP ═══ -->
+<div class="son-dakika-strip" id="sonDakikaStrip">
+  <div class="sdk-badge"><span class="pulse-dot" style="width:7px;height:7px"></span> SON DAKİKA</div>
+  <div class="sdk-scroll">
+    <div class="sdk-track" id="sdkTrack"></div>
+  </div>
+</div>
+
+<!-- ═══ PIYASA OZETI ═══ -->
+<section class="piyasa">
+  <div class="ctr">
+    <div class="sec-hdr"><div style="display:flex;align-items:center;gap:12px"><h2><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-right:6px;color:var(--blue)"><path d="M3 17l6 -6l4 4l8 -8"/><path d="M14 7l7 0l0 7"/></svg>Piyasa Özeti</h2><span class="live"><span class="pulse-dot"></span><span>CANLI</span></span></div><a href="#">Tüm Piyasalar →</a></div>
+    <div class="market-scroll" id="marketScroll"></div>
+    <div class="movers-section">
+      <div class="movers-card">
+        <div class="tab-bar" id="moversTabBar">
+          <button class="tab-btn active" data-tab="gainers">En Çok Artanlar</button>
+          <button class="tab-btn" data-tab="losers">En Çok Azalanlar</button>
+          <button class="tab-btn" data-tab="volume">Hacimce Artanlar</button>
+        </div>
+        <div id="moversContent"></div>
+        <div style="text-align:right;margin-top:12px"><a href="#" style="font-size:14px;color:var(--blue)">Tüm Hisseleri Gör →</a></div>
+      </div>
+      <div class="eco-card">
+        <div class="eco-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Yaklaşan Ekonomik Olaylar</div>
+        <div id="ecoEvents" style="flex:1"></div>
+        <a href="#" style="display:block;margin-top:auto;padding-top:12px;font-size:14px;color:var(--blue)">Tüm Takvim →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ ANA HABERLER ═══ -->
+<section class="ana-haberler">
+  <div class="ctr">
+    <div class="sec-hdr"><h2>Son Haberler</h2><a href="#">Tüm Haberler →</a></div>
+    <div class="news-grid">
+      <div>
+        <div class="large-card">
+          <div class="large-card-img"></div>
+          <div class="large-card-body">
+            <span class="cat cat-ekonomi">EKONOMİ</span>
+            <h3>Hazine ve Maliye Bakanlığı 2026 Bütçe Gerçekleşmelerini Açıkladı: Gelir ve Gider Dengesi Nasıl Şekillendi?</h3>
+            <p class="excerpt">İlk çeyrek bütçe verileri açıklandı. Vergi gelirleri beklentilerin üzerinde gerçekleşirken, faiz dışı harcamalarda artış dikkat çekti.</p>
+            <span style="font-size:13px;color:var(--meta)">Elif Korkmaz · 3 saat önce</span>
+          </div>
+        </div>
+        <div class="medium-grid">
+          <div class="med-card">
+            <div class="med-card-img"><div class="img-bg" style="background:url('https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=600&q=80&fit=crop') center/cover no-repeat"></div></div>
+            <div class="med-card-body">
+              <span class="cat" style="background:#3B82F6;color:#fff">BORSA</span>
+              <h4>BIST 30'da Yükselen Bankacılık Hisseleri: Analistlerin Favorileri</h4>
+              <p class="excerpt">Bankacılık sektöründe güçlü bilanço beklentileri hisseleri desteklemeye devam ediyor</p>
+              <span style="font-size:13px;color:var(--text2)">3 saat önce</span>
+            </div>
+          </div>
+          <div class="med-card">
+            <div class="med-card-img"><div class="img-bg" style="background:url('https://images.unsplash.com/photo-1624365168968-f283d506c6b6?w=600&q=80&fit=crop') center/cover no-repeat"></div></div>
+            <div class="med-card-body">
+              <span class="cat" style="background:#F59E0B;color:#1A1A1A">ALTIN</span>
+              <h4>Küresel Altın Talebi 2026'da Rekor Seviyeye Ulaştı</h4>
+              <p class="excerpt">Dünya Altın Konseyi raporuna göre merkez bankası alımları talebi yukarı çekiyor</p>
+              <span style="font-size:13px;color:var(--text2)">5 saat önce</span>
+            </div>
+          </div>
+          <div class="med-card">
+            <div class="med-card-img"><div class="img-bg" style="background:url('https://images.unsplash.com/photo-1621981386829-9b458a2cddde?w=600&q=80&fit=crop') center/cover no-repeat"></div></div>
+            <div class="med-card-body">
+              <span class="cat" style="background:#10B981;color:#fff">DÖVİZ</span>
+              <h4>Dolar/TL'de Kritik Destek ve Direnç Seviyeleri: Haftalık Teknik Analiz</h4>
+              <p class="excerpt">Teknik göstergeler kısa vadede yatay seyrin devam edebileceğine işaret ediyor</p>
+              <span style="font-size:13px;color:var(--text2)">1 saat önce</span>
+            </div>
+          </div>
+          <div class="med-card">
+            <div class="med-card-img"><div class="img-bg" style="background:url('https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&q=80&fit=crop') center/cover no-repeat"></div></div>
+            <div class="med-card-body">
+              <span class="cat" style="background:#6B7280;color:#fff">EKONOMİ</span>
+              <h4>Enflasyon Verileri Açıklandı: Piyasa Beklentileri ve Uzman Yorumları</h4>
+              <p class="excerpt">TÜİK verilerine göre aylık enflasyon beklentilerin altında gerçekleşti</p>
+              <span style="font-size:13px;color:var(--text2)">4 saat önce</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <aside>
+        <div style="margin-bottom:32px">
+          <div class="sidebar-title"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19l16 0"/><path d="M4 15l4 -6l4 2l4 -5l4 4"/></svg><span>En Çok Okunanlar</span></div>
+          <div id="mostRead"></div>
+        </div>
+        <div>
+          <div class="sidebar-title"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="var(--red)" stroke="var(--red)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z"/></svg><span>Editörün Seçimi</span></div>
+          <div id="editorPicks"></div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ OZEL HABER ═══ -->
+<section class="ozel">
+  <div class="ctr">
+    <div class="ozel-grid">
+      <div class="ozel-img"></div>
+      <div class="ozel-content">
+        <div class="ozel-badge">ÖZEL HABER</div>
+        <h3>LNG Avrupa'nın Enerji Haritasını Yeniden Çiziyor: Türkiye'nin Hub Olma Stratejisi</h3>
+        <p class="excerpt">Avrupa'nın Rus doğalgazından bağımsızlaşma çabaları, LNG ticaretinde yeni dengelerin oluşmasına yol açıyor. Türkiye, coğrafi konumu ve altyapı yatırımlarıyla bölgesel enerji hub'ı olma hedefine her zamankinden daha yakın.</p>
+        <div class="author">Elif Şahin · Özel Haber · 28 Mart 2026</div>
+        <button class="ozel-cta" style="display:inline-flex;align-items:center;gap:8px">Haberi Oku <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l14 0"/><path d="M13 18l6 -6"/><path d="M13 6l6 6"/></svg></button>
+      </div>
+    </div>
+    <div style="margin-top:48px">
+      <div class="ozel-related-label">İlgili Haberler</div>
+      <div class="ozel-related">
+        <div class="ozel-rel-item"><div class="ozel-rel-thumb" style="background:url('https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=200&q=80&fit=crop') center/cover no-repeat;border-radius:8px"></div><div><h5>Doğalgaz Fiyatları 2026'da Nasıl Şekillenecek?</h5><span class="meta">1 gün önce</span></div></div>
+        <div class="ozel-rel-item"><div class="ozel-rel-thumb" style="background:url('https://images.unsplash.com/photo-1513828583688-c52646db42da?w=200&q=80&fit=crop') center/cover no-repeat;border-radius:8px"></div><div><h5>Enerji Hisselerinde Yükseliş Trendi Sürecek mi?</h5><span class="meta">2 gün önce</span></div></div>
+        <div class="ozel-rel-item"><div class="ozel-rel-thumb" style="background:url('https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=200&q=80&fit=crop') center/cover no-repeat;border-radius:8px"></div><div><h5>BOTAŞ'ın Yeni Yatırım Planı Açıklandı</h5><span class="meta">3 gün önce</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CEVİRİCİ ═══ -->
+<section class="cevirici">
+  <div class="ctr">
+    <div class="sec-hdr"><h2>Çevirici Araçları</h2><a href="#">Tüm Araçlar →</a></div>
+    <div class="conv-grid">
+      <!-- Currency -->
+      <div class="conv-card">
+        <div class="conv-title"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10h14l-4 -4"/><path d="M17 14h-14l4 4"/></svg> Döviz Çevirici</div>
+        <div class="conv-row">
+          <input class="conv-input tn" id="currAmt" type="text" value="1">
+          <button class="swap-btn" id="currSwap"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10h14l-4 -4"/><path d="M17 14h-14l4 4"/></svg></button>
+          <div class="conv-result tn" id="currResult">38,45</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+          <select class="conv-select" id="currFrom"><option value="USD">USD - ABD Doları</option><option value="EUR">EUR - Euro</option><option value="GBP">GBP - İngiliz Sterlini</option><option value="CHF">CHF - İsviçre Frangı</option><option value="TRY">TRY - Türk Lirası</option></select>
+          <select class="conv-select" id="currTo"><option value="USD">USD - ABD Doları</option><option value="EUR">EUR - Euro</option><option value="GBP">GBP - İngiliz Sterlini</option><option value="CHF">CHF - İsviçre Frangı</option><option value="TRY" selected>TRY - Türk Lirası</option></select>
+        </div>
+        <div class="quick-pills"><button class="quick-pill" data-pair="USD">1 USD = 38,45 TL</button><button class="quick-pill" data-pair="EUR">1 EUR = 41,20 TL</button><button class="quick-pill" data-pair="GBP">1 GBP = 48,87 TL</button></div>
+        <table class="rate-table tn"><thead><tr><th>Döviz</th><th>TCMB</th><th>Serbest Piyasa</th></tr></thead><tbody><tr><td style="font-weight:600">USD/TRY</td><td>38,4200</td><td>38,4521</td></tr><tr><td style="font-weight:600">EUR/TRY</td><td>41,1850</td><td>41,2037</td></tr><tr><td style="font-weight:600">GBP/TRY</td><td>48,8400</td><td>48,8712</td></tr></tbody></table>
+      </div>
+      <!-- Gold -->
+      <div class="conv-card">
+        <div class="conv-title"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"/><path d="M14.8 9a2 2 0 0 0 -1.8 -1h-2a2 2 0 1 0 0 4h2a2 2 0 1 1 0 4h-2a2 2 0 0 1 -1.8 -1"/><path d="M12 7v10"/></svg> Altın Çevirici</div>
+        <div class="conv-row">
+          <input class="conv-input tn" id="goldAmt" type="text" value="1">
+          <button class="swap-btn" id="goldSwap"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10h14l-4 -4"/><path d="M17 14h-14l4 4"/></svg></button>
+          <div class="conv-result tn" id="goldResult">3.248,50</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+          <select class="conv-select" id="goldType"><option>Gram Altın</option><option>Çeyrek Altın</option><option>Yarım Altın</option><option>Tam Altın</option><option>Cumhuriyet Altını</option><option>22 Ayar Bilezik</option><option>18 Ayar</option><option>14 Ayar</option></select>
+          <select class="conv-select" disabled><option>TRY - Türk Lirası</option></select>
+        </div>
+        <div class="quick-pills" id="goldPresets">
+          <button class="preset-btn active" data-g="1" data-t="Gram Altın">1g</button><button class="preset-btn" data-g="5" data-t="Gram Altın">5g</button><button class="preset-btn" data-g="10" data-t="Gram Altın">10g</button><button class="preset-btn" data-g="25" data-t="Gram Altın">25g</button><button class="preset-btn" data-g="1" data-t="Çeyrek Altın">1 Çeyrek</button><button class="preset-btn" data-g="1" data-t="Tam Altın">1 Tam</button>
+        </div>
+        <table class="rate-table tn"><thead><tr><th>Tür</th><th>Alış</th><th>Satış</th></tr></thead><tbody><tr><td>Gram Altın</td><td>3.245,00</td><td>3.252,00</td></tr><tr><td>Çeyrek Altın</td><td>5.305,00</td><td>5.315,00</td></tr><tr><td>Cumhuriyet</td><td>21.800,00</td><td>22.050,00</td></tr></tbody></table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ KATEGORİ HABERLERİ ═══ -->
+<section class="kategori">
+  <div class="ctr">
+    <div class="sec-hdr"><h2>Kategori Haberleri</h2><span></span></div>
+    <div class="tab-bar" id="catTabBar">
+      <button class="tab-btn active" data-cat="Borsa">Borsa</button>
+      <button class="tab-btn" data-cat="Emtia">Emtia &amp; Döviz</button>
+      <button class="tab-btn" data-cat="Altin">Altın</button>
+      <button class="tab-btn" data-cat="Kripto">Kripto</button>
+      <button class="tab-btn" data-cat="Ekonomi">Ekonomi</button>
+    </div>
+    <div id="catContent"></div>
+    <div style="text-align:right;margin-top:16px"><a href="#" style="font-size:14px;color:var(--blue)" id="catLink">Tüm Borsa Haberleri →</a></div>
+  </div>
+</section>
+
+<!-- ═══ BIST HİSSELER ═══ -->
+<section class="bist">
+  <div class="ctr">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
+      <div style="display:flex;align-items:center;gap:12px"><h2 style="font-size:28px;font-weight:600;border-left:3px solid var(--red);padding-left:12px">Borsa İstanbul</h2><span class="live"><span class="pulse-dot"></span><span>CANLI</span></span></div>
+      <a href="#" style="font-size:14px;color:var(--blue);display:inline-flex;align-items:center;gap:4px"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6m0 1a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v3a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1z"/><path d="M10 6m0 1a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v8a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1z"/><path d="M16 6m0 1a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v13a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1z"/></svg> Canlı Borsa Ekranı →</a>
+    </div>
+    <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:24px;overflow:hidden">
+      <div class="heatmap" id="heatmap"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;font-size:12px;color:var(--text2)">
+        <a href="#" style="color:var(--blue);display:inline-flex;align-items:center;gap:4px"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4l4 0l0 4"/><path d="M14 10l6 -6"/><path d="M8 20l-4 0l0 -4"/><path d="M4 20l6 -6"/><path d="M16 20l4 0l0 -4"/><path d="M14 14l6 6"/><path d="M8 4l-4 0l0 4"/><path d="M4 4l6 6"/></svg> Haritayı Büyüt →</a>
+        <div style="display:flex;align-items:center;gap:8px"><span>Yükseliş</span><div style="width:80px;height:8px;border-radius:4px;background:linear-gradient(to right,#22c55e,#86efac,#fca5a5,#ef4444)"></div><span>Düşüş</span></div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+      <div class="tab-bar" style="border:none;margin:0" id="bistTabBar">
+        <button class="tab-btn active">BIST 100</button><button class="tab-btn">BIST 50</button><button class="tab-btn">BIST 30</button><button class="tab-btn">Yıldız Pazar</button>
+      </div>
+      <div style="position:relative"><svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;left:10px;top:10px;color:var(--text2)" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><input class="search-input" id="stockSearch" placeholder="Hisse ara..."></div>
+    </div>
+    <div style="background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden">
+      <table class="stock-table tn" id="stockTable">
+        <thead><tr><th>Hisse</th><th>Son Fiyat</th><th>Değişim</th><th class="hide-m">Hacim</th><th class="hide-m">Gün Aralığı</th></tr></thead>
+        <tbody id="stockBody"></tbody>
+      </table>
+    </div>
+    <div style="text-align:right;margin-top:12px"><a href="#" style="font-size:14px;color:var(--blue)">Tüm Hisseleri Gör →</a></div>
+  </div>
+</section>
+
+<!-- ═══ KAP HABERLERİ ═══ -->
+<section class="kap">
+  <div class="ctr">
+    <div class="sec-hdr"><div style="display:flex;align-items:center;gap:10px"><h2>KAP Haberleri</h2><span class="live"><span class="pulse-dot"></span><span>CANLI</span></span></div><a href="#">Tüm KAP Haberleri →</a></div>
+    <div class="kap-card">
+      <div class="kap-pills" id="kapPills">
+        <button class="kap-pill active" data-code="ALL">Tümü</button>
+        <button class="kap-pill" data-code="THYAO">THYAO</button>
+        <button class="kap-pill" data-code="GARAN">GARAN</button>
+        <button class="kap-pill" data-code="ASELS">ASELS</button>
+        <button class="kap-pill" data-code="SISE">SISE</button>
+        <button class="kap-pill" data-code="TUPRS">TUPRS</button>
+        <button class="kap-pill" data-code="KCHOL">KCHOL</button>
+        <button class="kap-pill" data-code="EREGL">EREGL</button>
+        <button class="kap-pill" data-code="AKBNK">AKBNK</button>
+        <button class="kap-pill" data-code="BIMAS">BIMAS</button>
+        <button class="kap-pill" data-code="SAHOL">SAHOL</button>
+      </div>
+      <div class="kap-feed" id="kapFeed"></div>
+      <div class="kap-footer">
+        <span class="tn">Son Güncelleme: 14:32</span>
+        <span>·</span>
+        <span>Toplam 10 bildirim</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ KRİPTO PARALAR ═══ -->
+<section class="crypto">
+  <div class="ctr">
+    <div class="sec-hdr"><h2>Kripto Paralar</h2><a href="#">Tüm Kripto Paralar →</a></div>
+    <div style="background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden">
+      <table class="crypto-table tn" id="cryptoTable">
+        <thead><tr>
+          <th style="width:40px">#</th><th style="width:40px"></th><th>Kripto</th>
+          <th style="text-align:right;cursor:pointer" data-sort="price">Fiyat ▾</th>
+          <th style="text-align:right;cursor:pointer" data-sort="h24">24s</th>
+          <th class="hide-m" style="text-align:right">7g</th>
+          <th class="hide-m">Grafik</th>
+          <th class="hide-m" style="text-align:right;cursor:pointer" data-sort="mcapVal">P. Değeri</th>
+        </tr></thead>
+        <tbody id="cryptoBody"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SEO TEXT ═══ -->
+<section class="seo">
+  <div class="ctr">
+    <h3 style="font-size:22px;font-weight:600;margin-bottom:16px">Finans Piyasaları Hakkında</h3>
+    <div class="seo-text collapsed" id="seoText">
+      <p style="font-size:15px;color:var(--text2);line-height:1.8">Finans piyasaları, yatırımcıların çeşitli finansal enstrümanları alıp sattığı organize pazar yerleridir. Borsa İstanbul (BIST), Türkiye'nin başlıca menkul kıymetler borsası olarak hisse senetleri, tahviller ve türev ürünlerin işlem gördüğü platformdur. Döviz piyasaları, özellikle USD/TRY ve EUR/TRY paritesi, Türkiye'nin dış ticaret dengeleri ve Merkez Bankası politikalarından doğrudan etkilenmektedir.</p>
+      <p id="seoExtra" style="font-size:15px;color:var(--text2);line-height:1.8;display:none;margin-top:16px">Altın, Türk yatırımcılar için geleneksel bir değer saklama aracı olma özelliğini sürdürmektedir. Gram altın, çeyrek altın ve Cumhuriyet altını gibi çeşitli formlarda işlem gören altın fiyatları, uluslararası ons altın fiyatı ve USD/TRY kuru üzerinden hesaplanmaktadır. Kripto para piyasaları ise Bitcoin ve Ethereum başta olmak üzere dijital varlıkların alım satımının yapıldığı yeni nesil finansal piyasalardır.<br><br>AHaber Finans olarak, canlı borsa verileri, anlık döviz kurları, güncel altın fiyatları ve kripto para takibi gibi kapsamlı finansal bilgileri kullanıcılarımıza sunmaktayız.</p>
+      <div class="seo-fade" id="seoFade"></div>
+    </div>
+    <button class="seo-toggle" id="seoToggle" style="display:inline-flex;align-items:center;gap:4px">Devamını Oku <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M6 9l6 6l6 -6"/></svg></button>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="footer">
+  <div class="ctr">
+    <div class="footer-cols">
+      <div><div class="footer-col-title">Borsa</div><a class="footer-link">Canlı Borsa</a><a class="footer-link">Hisse Fiyatları</a><a class="footer-link">BIST 100</a><a class="footer-link">BIST 50</a><a class="footer-link">Endeksler</a><a class="footer-link">En Çok Artanlar</a><a class="footer-link">Günün Özeti</a></div>
+      <div><div class="footer-col-title">Döviz</div><a class="footer-link">Dolar Kuru</a><a class="footer-link">Euro Kuru</a><a class="footer-link">Sterlin</a><a class="footer-link">Pariteler</a><a class="footer-link">Merkez Bankası Kurları</a><a class="footer-link">Döviz Çevirici</a></div>
+      <div><div class="footer-col-title">Altın</div><a class="footer-link">Gram Altın</a><a class="footer-link">Çeyrek Altın</a><a class="footer-link">Cumhuriyet Altını</a><a class="footer-link">ONS Altın</a><a class="footer-link">22 Ayar Bilezik</a><a class="footer-link">Altın Çevirici</a><a class="footer-link">Altın Fiyatları</a></div>
+      <div><div class="footer-col-title">Kurumsal</div><a class="footer-link">Hakkımızda</a><a class="footer-link">İletişim</a><a class="footer-link">Reklam</a><a class="footer-link">Gizlilik Politikası</a><a class="footer-link">Kullanım Koşulları</a><a class="footer-link">KVKK Aydınlatma Metni</a><a class="footer-link">Çerez Politikası</a></div>
+    </div>
+    <div class="footer-brands"><span style="color:var(--red)">A</span>Haber · Sabah · ATV · <span style="color:var(--red)">A</span> Para · <span style="color:var(--red)">A</span> Spor</div>
+    <div class="footer-bottom">
+      <div class="social-icons"><a class="social-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4l11.733 16h4.267l-11.733 -16z"/><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772"/></svg></a><a class="social-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4m0 4a4 4 0 0 1 4 -4h8a4 4 0 0 1 4 4v8a4 4 0 0 1 -4 4h-8a4 4 0 0 1 -4 -4z"/><path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"/><path d="M16.5 7.5l0 .01"/></svg></a><a class="social-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8a4 4 0 0 1 4 -4h12a4 4 0 0 1 4 4v8a4 4 0 0 1 -4 4h-12a4 4 0 0 1 -4 -4v-8z"/><path d="M10 9l5 3l-5 3z"/></svg></a><a class="social-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"/><path d="M8 11l0 5"/><path d="M8 8l0 .01"/><path d="M12 16l0 -5"/><path d="M16 16v-3a2 2 0 0 0 -4 0"/></svg></a><a class="social-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 10l-4 4l6 6l4 -16l-18 7l4 2l2 6l3 -4"/></svg></a></div>
+      <span class="copyright">© 2026 Turkuvaz Medya Grubu. Tüm hakları saklıdır.</span>
+    </div>
+    <div class="disclaimer">Veriler Foreks tarafından sağlanmaktadır. Veriler 15 dakika gecikmeli olabilir.</div>
+  </div>
+</footer>
+
+<!-- Bottom Tab Bar -->
+<nav class="bottom-bar" id="bottomBar">
+  <button class="bottom-tab active"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l-2 0l9 -9l9 9l-2 0"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7"/><path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6"/></svg><span>Ana Sayfa</span></button>
+  <button class="bottom-tab"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12m0 1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z"/><path d="M9 8m0 1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z"/><path d="M15 4m0 1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z"/><path d="M4 20l18 0"/></svg><span>Piyasalar</span></button>
+  <button class="bottom-tab"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 6h3a1 1 0 0 1 1 1v11a2 2 0 0 1 -4 0v-13a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1v12a3 3 0 0 0 3 3h11"/><path d="M8 8l4 0"/><path d="M8 12l4 0"/><path d="M8 16l4 0"/></svg><span>Haberler</span></button>
+  <button class="bottom-tab"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10h3v-3l-3.5 -3.5a6 6 0 0 1 8 8l6 6a2 2 0 0 1 -3 3l-6 -6a6 6 0 0 1 -8 -8l3.5 3.5"/></svg><span>Araçlar</span></button>
+  <button class="bottom-tab" id="bottomMenu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l16 0"/><path d="M4 12l16 0"/><path d="M4 18l16 0"/></svg><span>Menü</span></button>
+</nav>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════════════
+const tickerData=[
+  {sym:"BIST 100",price:"10.542,37",chg:"+142,25",pct:"+1,37%",dir:"up",sp:"0,12 5,10 10,11 15,8 20,9 25,5 30,4 35,6 40,3"},
+  {sym:"USD/TRY",price:"38,4521",chg:"-0,0834",pct:"-0,22%",dir:"down",sp:"0,5 5,4 10,6 15,7 20,6 25,9 30,10 35,8 40,11"},
+  {sym:"EUR/TRY",price:"41,2037",chg:"+0,1245",pct:"+0,30%",dir:"up",sp:"0,6 5,7 10,5 15,8 20,10 25,9 30,12 35,11 40,13"},
+  {sym:"GBP/TRY",price:"48,8712",chg:"+0,2103",pct:"+0,43%",dir:"up",sp:"0,14 5,12 10,13 15,10 20,8 25,9 30,6 35,5 40,4"},
+  {sym:"Gram Altın",price:"3.248,50",chg:"-12,30",pct:"-0,38%",dir:"up",sp:"0,11 5,9 10,10 15,7 20,8 25,4 30,5 35,3 40,2"},
+  {sym:"Çeyrek Altın",price:"5.310,00",chg:"-22,00",pct:"-0,41%",dir:"up",sp:"0,13 5,11 10,12 15,9 20,7 25,8 30,5 35,4 40,3"},
+  {sym:"BTC/TRY",price:"2.845.000",chg:"+45.200",pct:"+1,61%",dir:"up",sp:"0,10 5,12 10,8 15,6 20,9 25,4 30,7 35,3 40,2"}
+];
+const marketCards=[
+  {label:"BIST 100",value:"10.542,17",change:"+142,25",pct:"+1,37%",pos:true,low:10412,high:10563,cur:10542,pts:"0,35 8,32 16,28 24,22 32,18 40,12 48,8 56,5 64,4 72,6 80,8 88,6 96,4 104,3 112,5 120,4 128,3 136,2 144,1 152,0"},
+  {label:"USD/TRY",value:"38,4121",change:"-0,0834",pct:"-0,22%",pos:false,low:38.31,high:38.52,cur:38.41,pts:"0,8 8,9 16,10 24,11 32,12 40,14 48,15 56,16 64,17 72,18 80,19 88,18 96,17 104,15 112,14 120,12 128,11 136,10 144,9 152,8"},
+  {label:"EUR/TRY",value:"41,2037",change:"+0,1245",pct:"+0,30%",pos:true,low:41.08,high:41.35,cur:41.20,pts:"0,18 8,16 16,14 24,12 32,10 40,8 48,6 56,4 64,3 72,4 80,6 88,8 96,10 104,12 112,14 120,16 128,17 136,18 144,19 152,20"},
+  {label:"Gram Altın",value:"3.248,40",change:"-12,30",pct:"-0,38%",pos:false,low:3215,high:3262,cur:3248,pts:"0,8 8,10 16,12 24,14 32,15 40,16 48,17 56,18 64,19 72,18 80,16 88,14 96,12 104,10 112,8 120,6 128,4 136,3 144,2 152,1"},
+  {label:"Çeyrek Altın",value:"5.312,00",change:"-22,00",pct:"-0,41%",pos:false,low:5270,high:5340,cur:5312,pts:"0,7 8,9 16,11 24,13 32,14 40,15 48,16 56,17 64,18 72,17 80,15 88,13 96,11 104,9 112,7 120,5 128,3 136,2 144,1 152,0"},
+  {label:"BTC/TRY",value:"2.845.000",change:"+45.200",pct:"+1,61%",pos:true,low:2810000,high:2870000,cur:2845000,pts:"0,12 8,14 16,16 24,14 32,12 40,10 48,14 56,16 64,18 72,16 80,14 88,16 96,18 104,17 112,15 120,13 128,11 136,10 144,9 152,8"}
+];
+const gainers=[{s:"ASELS",p:"82,45",c:"+4,82%",sp:[4,6,5,8,7,10,12,11,14,16,18,20]},{s:"THYAO",p:"314,25",c:"+3,67%",sp:[6,7,8,7,10,11,13,12,15,16,18,19]},{s:"SISE",p:"58,90",c:"+3,21%",sp:[5,6,5,7,8,9,10,12,11,14,15,17]},{s:"TUPRS",p:"187,30",c:"+2,95%",sp:[8,9,8,10,11,10,13,14,13,16,17,18]},{s:"KCHOL",p:"215,60",c:"+2,41%",sp:[7,8,9,8,10,11,10,12,13,14,15,16]}];
+const losers=[{s:"EREGL",p:"48,52",c:"-3,15%",sp:[20,18,19,16,15,14,12,13,10,8,7,5]},{s:"PETKM",p:"22,18",c:"-2,87%",sp:[18,17,16,17,14,13,12,11,10,9,7,6]},{s:"TCELL",p:"76,40",c:"-2,34%",sp:[16,15,16,14,13,14,12,11,10,9,8,7]},{s:"SAHOL",p:"92,15",c:"-1,98%",sp:[15,14,15,13,14,12,11,12,10,9,8,7]},{s:"AKBNK",p:"61,30",c:"-1,45%",sp:[14,13,14,13,12,13,11,12,10,11,9,8]}];
+const volumeL=[{s:"GARAN",p:"128,50",v:"2,4B TL",sp:[8,10,9,12,11,14,13,15,14,16,17,18]},{s:"THYAO",p:"314,25",v:"1,8B TL",sp:[6,7,8,7,10,11,13,12,15,16,18,19]},{s:"AKBNK",p:"61,30",v:"1,5B TL",sp:[14,13,14,13,12,13,11,12,10,11,9,8]},{s:"YKBNK",p:"38,92",v:"1,2B TL",sp:[7,8,9,10,9,11,12,11,13,14,15,16]},{s:"ASELS",p:"82,45",v:"980M TL",sp:[4,6,5,8,7,10,12,11,14,16,18,20]}];
+const mostRead=[["Merkez Bankası Faiz Kararı Ne Zaman Açıklanacak?","45 dk önce","14.2K"],["Gram Altın Bugün Ne Kadar? 31 Mart 2026 Altın Fiyatları","1 saat önce","11.8K"],["Dolar/TL Canlı Kur: Serbest Piyasada Son Durum","2 saat önce","9.4K"],["BIST 100'de Dikkat Çeken 5 Hisse: Analist Yorumları","3 saat önce","7.1K"],["Bitcoin Neden Yükseliyor? Uzman Görüşleri","4 saat önce","5.6K"]];
+const edPicks=[["Türkiye Ekonomisinin 2026 Büyüme Tahminleri Güncellendi","EKONOMİ","https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=200&q=80&fit=crop"],["Savunma Sanayi Hisseleri Neden Yükselişte?","BORSA","https://images.unsplash.com/photo-1642790106117-e829e14a795f?w=200&q=80&fit=crop"],["Altın mı Dolar mı? Uzmanlar Hangi Yatırımı Öneriyor?","ALTIN","https://images.unsplash.com/photo-1610375461246-83df859d849d?w=200&q=80&fit=crop"]];
+const catNews={Borsa:[["BIST 100 Son Durum: Endeks 10.500 Üzerini Koruyor","25 dk önce"],["Bankacılık Hisseleri Rallisini Sürdürüyor","1 saat önce"],["THYAO Hisseleri Yeni Rekor","1 saat önce"],["ASELS Savunma İhaleleri Sonrası Güçlü Yükseliş","2 saat önce"],["BIST 50 Endeksinde Değişiklik","3 saat önce"],["Halka Arz Takvimi: Nisan 2026","3 saat önce"],["Yabancı Yatırımcıların BIST'teki Payı Artıyor","4 saat önce"],["Seans Raporu: BIST 100 Kapanış Yorumu","5 saat önce"]],Emtia:[["Dolar/TL Canlı: 38,50 Seviyesi Test Ediliyor","30 dk önce"],["Euro/TL Kurunda Hareketlilik: ECB Etkisi","1 saat önce"],["Merkez Bankası Döviz Rezervleri Açıklandı","2 saat önce"],["Petrol Fiyatları OPEC+ Öncesi Yükseldi","2 saat önce"],["Sterlin/TL Kurunda Yeni Denge","3 saat önce"],["Doğalgaz Fiyatları Mevsimsel Düşüşte","4 saat önce"],["Bakır Fiyatları Çin Talebiyle Yükseliyor","5 saat önce"],["TCMB Faiz Kararı Öncesi Beklentiler","6 saat önce"]],Altin:[["Gram Altın Bugün 3.250 TL: Günlük Analiz","20 dk önce"],["Çeyrek Altın 5.300 TL'yi Geçti","1 saat önce"],["ONS Altın Rekor Kırdı","2 saat önce"],["Cumhuriyet Altını Banka Karşılaştırması","3 saat önce"],["22 Ayar Bilezik Fiyatı Bugün Ne Kadar?","3 saat önce"],["Altın Yatırımında Dikkat Edilmesi Gerekenler","4 saat önce"],["Dünya Altın Konseyi Talep Raporu","5 saat önce"],["Altın mı Döviz mi? İkinci Yarı Tahminleri","6 saat önce"]],Kripto:[["Bitcoin 2.8 Milyon TL: Kurumsal Alımlar","15 dk önce"],["Ethereum Merge İlk Yıl Değerlendirmesi","1 saat önce"],["Solana Ekosistemi Büyüyor","2 saat önce"],["SPK Kripto Düzenlemesi Gelişmeleri","3 saat önce"],["Altcoin Sezonu Başladı mı?","4 saat önce"],["Türkiye'de Kripto Kullanım Oranı Artıyor","5 saat önce"],["Stablecoin Düzenlemeleri: ABD ve AB","6 saat önce"],["NFT Pazarı 2026: Trendler ve Fırsatlar","7 saat önce"]],Ekonomi:[["TÜİK Enflasyon Verileri: Mart 2026","30 dk önce"],["Hazine İhalesi Sonuçları","1 saat önce"],["Türkiye 2026 Büyüme Tahmini Güncellendi","2 saat önce"],["İstihdam Verileri: İşsizlik Oranı","3 saat önce"],["Cari Açık Verileri: Şubat 2026","4 saat önce"],["Konut Fiyat Endeksi: Hangi Şehirler?","5 saat önce"],["Otomotiv İhracat Rakamları Rekor","6 saat önce"],["G20 Zirvesinde Türkiye'nin Gündemi","7 saat önce"]]};
+const catImages={Borsa:["https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=300&q=80&fit=crop","https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=300&q=80&fit=crop","https://images.unsplash.com/photo-1642790106117-e829e14a795f?w=300&q=80&fit=crop"],Emtia:["https://images.unsplash.com/photo-1580519542036-c47de6196ba5?w=300&q=80&fit=crop","https://images.unsplash.com/photo-1621981386829-9b458a2cddde?w=300&q=80&fit=crop","https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=300&q=80&fit=crop"],Altin:["https://images.unsplash.com/photo-1610375461246-83df859d849d?w=300&q=80&fit=crop","https://images.unsplash.com/photo-1624365168968-f283d506c6b6?w=300&q=80&fit=crop","https://images.unsplash.com/photo-1589656966895-2f33e7653819?w=300&q=80&fit=crop"],Kripto:["https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=300&q=80&fit=crop","https://images.unsplash.com/photo-1621504450181-5d356f61d307?w=300&q=80&fit=crop","https://images.unsplash.com/photo-1622630998477-20aa696ecb05?w=300&q=80&fit=crop"],Ekonomi:["https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=300&q=80&fit=crop","https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=300&q=80&fit=crop","https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=300&q=80&fit=crop"]};
+const catBadge={Borsa:"cat-borsa",Emtia:"cat-emtia",Altin:"cat-altin",Kripto:"cat-kripto",Ekonomi:"cat-ekonomi"};
+const catLabel={Borsa:"BORSA",Emtia:"EMTİA",Altin:"ALTIN",Kripto:"KRİPTO",Ekonomi:"EKONOMİ"};
+const heatmap=[{c:"GARAN",ch:2.1,cs:2,sec:"BANKACILIK"},{c:"AKBNK",ch:-0.8,cs:2,sec:""},{c:"YKBNK",ch:1.5,cs:1,sec:""},{c:"THYAO",ch:3.7,cs:2,rs:2,sec:"SANAYİ"},{c:"SISE",ch:1.2,cs:1,sec:""},{c:"TUPRS",ch:-0.5,cs:1,sec:""},{c:"EREGL",ch:-3.1,cs:1,sec:""},{c:"TOASO",ch:1.1,cs:1,sec:""},{c:"ASELS",ch:4.8,cs:1,sec:"TEKNOLOJİ"},{c:"TCELL",ch:0.3,cs:1,sec:""},{c:"TTKOM",ch:-1.2,cs:1,sec:""},{c:"KCHOL",ch:2.4,cs:1,sec:"HOLDİNG"},{c:"SAHOL",ch:0.9,cs:1,sec:""},{c:"SASA",ch:-1.8,cs:1,sec:""},{c:"PETKM",ch:-2.9,cs:1,sec:""}];
+const stocks=[{c:"THYAO",n:"Türk Hava Yolları",p:"314,25",ch:3.67,v:"1,8B",mn:302,mx:316,cu:314.25},{c:"GARAN",n:"Garanti BBVA",p:"128,50",ch:2.10,v:"2,4B",mn:124,mx:129,cu:128.5},{c:"ASELS",n:"ASELSAN",p:"82,45",ch:4.82,v:"980M",mn:78,mx:83,cu:82.45},{c:"SISE",n:"Şişecam",p:"58,90",ch:3.21,v:"650M",mn:56,mx:59,cu:58.9},{c:"AKBNK",n:"Akbank",p:"61,30",ch:-1.45,v:"1,5B",mn:60,mx:63,cu:61.3},{c:"EREGL",n:"Ereğli Demir Çelik",p:"48,52",ch:-3.15,v:"890M",mn:47,mx:51,cu:48.52},{c:"KCHOL",n:"Koç Holding",p:"215,60",ch:2.41,v:"420M",mn:210,mx:217,cu:215.6},{c:"TUPRS",n:"Tüpraş",p:"187,30",ch:2.95,v:"380M",mn:182,mx:188,cu:187.3},{c:"TCELL",n:"Turkcell",p:"76,40",ch:-2.34,v:"520M",mn:75,mx:79,cu:76.4},{c:"SAHOL",n:"Sabancı Holding",p:"92,15",ch:-1.98,v:"340M",mn:91,mx:95,cu:92.15},{c:"BIMAS",n:"BİM Mağazaları",p:"445,80",ch:1.24,v:"310M",mn:438,mx:448,cu:445.8},{c:"FROTO",n:"Ford Otosan",p:"1.285,00",ch:0.78,v:"190M",mn:1270,mx:1292,cu:1285},{c:"KOZAA",n:"Koza Altın",p:"142,60",ch:2.85,v:"280M",mn:138,mx:144,cu:142.6},{c:"VESTL",n:"Vestel Elektronik",p:"34,18",ch:-1.72,v:"220M",mn:33,mx:35,cu:34.18},{c:"TTKOM",n:"Türk Telekom",p:"52,75",ch:-0.94,v:"410M",mn:52,mx:54,cu:52.75}];
+const kapItems=[["14:32","THYAO","Türk Hava Yolları yönetim kurulu kararı açıklandı","Yönetim Kurulu","high"],["14:18","GARAN","Garanti BBVA 2026 Q1 finansal tabloları","Finansal Tablo","high"],["13:55","ASELS","ASELSAN yeni savunma sözleşmesi imzaladı","Sözleşme","high"],["13:41","SISE","Şişecam kapasite artırım yatırımı duyurusu","Yatırım","medium"],["13:28","TUPRS","Tüpraş rafineri bakım takvimi güncellendi","Özel Durum","low"],["13:15","KCHOL","Koç Holding bağlı ortaklık pay alımı bildirimi","İçeriden","medium"],["12:58","EREGL","Erdemir üretim verileri açıklaması","Özel Durum","low"],["12:44","AKBNK","Akbank sermaye yeterliliği rasyosu bildirimi","Finansal Tablo","medium"],["12:30","BIMAS","BİM mağaza açılış bilgilendirmesi","Yatırım","low"],["12:12","SAHOL","Sabancı Holding özel durum açıklaması","Özel Durum","medium"]];
+const ecoEvts=[["TCMB Faiz Kararı","3 Nisan, 14:00","Yüksek","#EF4444"],["TÜİK Enflasyon Verisi","4 Nisan, 10:00","Orta","#F59E0B"],["Sanayi Üretim Endeksi","7 Nisan, 10:00","Düşük","#10B981"],["ABD Tarım Dışı İstihdam","4 Nisan, 15:30","Yüksek","#EF4444"]];
+let cryptoData=[
+  {r:1,n:"Bitcoin",s:"BTC",col:"#F7931A",price:2845000,h24:2.34,d7:5.67,mcap:"54,2T TL",mv:54200,sp:[30,32,34,31,36,38,35,40,42,44,46,48]},
+  {r:2,n:"Ethereum",s:"ETH",col:"#627EEA",price:128450,h24:1.87,d7:3.21,mcap:"15,8T TL",mv:15800,sp:[22,24,23,26,25,28,27,30,29,32,31,33]},
+  {r:3,n:"BNB",s:"BNB",col:"#F3BA2F",price:23180,h24:-0.45,d7:1.12,mcap:"3,4T TL",mv:3400,sp:[28,27,29,28,30,29,31,30,29,31,30,32]},
+  {r:4,n:"Solana",s:"SOL",col:"#9945FF",price:5920,h24:4.56,d7:8.90,mcap:"2,5T TL",mv:2500,sp:[15,18,20,22,25,24,28,30,33,35,38,40]},
+  {r:5,n:"XRP",s:"XRP",col:"#23292F",price:82.45,h24:-1.23,d7:-2.45,mcap:"4,1T TL",mv:4100,sp:[35,33,34,32,30,31,29,28,30,27,26,25]},
+  {r:6,n:"Cardano",s:"ADA",col:"#0033AD",price:28.30,h24:0.89,d7:2.34,mcap:"1,0T TL",mv:1000,sp:[20,21,22,21,23,22,24,23,25,24,26,25]},
+  {r:7,n:"Avalanche",s:"AVAX",col:"#E84142",price:1380,h24:-2.10,d7:-4.56,mcap:"520B TL",mv:520,sp:[40,38,39,36,37,34,35,32,33,30,28,26]},
+  {r:8,n:"Polkadot",s:"DOT",col:"#E6007A",price:268.50,h24:1.45,d7:3.78,mcap:"380B TL",mv:380,sp:[18,20,19,22,24,23,26,25,28,27,30,29]},
+  {r:9,n:"Chainlink",s:"LINK",col:"#2A5ADA",price:580.20,h24:3.21,d7:7.65,mcap:"340B TL",mv:340,sp:[14,17,19,22,21,25,28,27,31,33,36,38]},
+  {r:10,n:"Polygon",s:"MATIC",col:"#8247E5",price:38.90,h24:-0.67,d7:1.23,mcap:"280B TL",mv:280,sp:[25,27,24,28,26,29,25,30,27,28,30,29]}
+];
+const exRates={USD:38.45,EUR:41.20,GBP:48.87,CHF:43.15,TRY:1};
+const goldRates={"Gram Altın":3248.50,"Çeyrek Altın":5310,"Yarım Altın":10620,"Tam Altın":21240,"Cumhuriyet Altını":21900,"22 Ayar Bilezik":2975,"18 Ayar":2436,"14 Ayar":1896};
+
+// ═══════════════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════════════
+function svgSpark(w,h,color,pts){
+  const mx=Math.max(...pts),mn=Math.min(...pts),r=mx-mn||1;
+  const d=pts.map((p,i)=>{const x=(i/(pts.length-1))*w;const y=h-((p-mn)/r)*(h*.75)-h*.1;return(i===0?'M':'L')+x.toFixed(1)+','+y.toFixed(1)}).join(' ');
+  return'<svg width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'" style="display:block;flex-shrink:0"><path d="'+d+'" fill="none" stroke="'+color+'" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+}
+function svgSparkArea(w,h,color,ptsStr){
+  return'<svg width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'"><defs><linearGradient id="g'+color.replace('#','')+'" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="'+color+'" stop-opacity=".2"/><stop offset="100%" stop-color="'+color+'" stop-opacity="0"/></linearGradient></defs><path d="M'+ptsStr+' L'+w+','+h+' L0,'+h+' Z" fill="url(#g'+color.replace('#','')+')" /><path d="M'+ptsStr+'" fill="none" stroke="'+color+'" stroke-width="1.5" stroke-linecap="round"/></svg>';
+}
+function badge(pos,val){return'<span class="'+(pos?'badge-pos':'badge-neg')+' tn">'+(pos?'▲':'▼')+' '+val+'</span>'}
+function fmtTRY(n){return n>=1000?new Intl.NumberFormat('tr-TR',{maximumFractionDigits:0}).format(n):new Intl.NumberFormat('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n)}
+function fmtN(n){return new Intl.NumberFormat('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n)}
+function hmColor(ch){return ch>=4?'#15803d':ch>=2?'#22c55e':ch>=1?'#4ade80':ch>0?'#86efac':ch>-1?'#fca5a5':ch>-2?'#f87171':ch>-3?'#ef4444':'#dc2626'}
+function hmText(ch){return(ch>-1&&ch<2)?'#1A1A1A':'#fff'}
+
+// ═══════════════════════════════════════════════════════════════
+// RENDER ON LOAD
+// ═══════════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded',function(){
+  // TICKER
+  const tt=document.getElementById('tickerTrack');
+  const items=[...tickerData,...tickerData];
+  tt.innerHTML=items.map(t=>{
+    const col=t.dir==='up'?'var(--pos)':'var(--neg)';
+    const hexCol=t.dir==='up'?'#10B981':'#EF4444';
+    const arrow=t.dir==='up'?'▲':'▼';
+    const spark='<svg width="40" height="16" viewBox="0 0 40 16" fill="none" style="vertical-align:middle;margin:0 6px;flex-shrink:0"><polyline points="'+t.sp+'" stroke="'+hexCol+'" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>';
+    return'<div class="ticker-item"><span class="ticker-sym">'+t.sym+'</span><span class="ticker-price tn">'+t.price+'</span>'+spark+'<span class="ticker-chg tn" style="color:'+col+'">'+arrow+' '+t.chg+' ('+t.pct+')</span></div>';
+  }).join('');
+
+  // SON DAKİKA STRIP
+  const sdkHeadlines=[
+    "Merkez Bankası faiz kararını açıkladı: Politika faizi yüzde 42,5'te sabit tutuldu",
+    "BIST 100 gün içi rekor kırdı: 10.847 puan",
+    "Gram altın 3.280 TL'yi gördü, uzmanlar yükselişin devam edeceğini öngörüyor",
+    "Dolar/TL 38,72 seviyesinde: Piyasalar Merkez Bankası'nı bekliyor",
+    "Petrol fiyatları yüzde 3 düştü: OPEC toplantısı öncesi baskı sürüyor",
+    "Borsa İstanbul'da bankacılık endeksi yüzde 2,1 yükseldi",
+    "Avrupa borsaları karışık açıldı: DAX yüzde 0,4 artıda",
+    "Bitcoin 2,85 milyon TL'yi aştı: Kurumsal alımlar hızlandı"
+  ];
+  const sdkTrack=document.getElementById('sdkTrack');
+  const sdkHTML=sdkHeadlines.map(h=>'<span class="sdk-item">'+h+'</span>').join('');
+  sdkTrack.innerHTML=sdkHTML+sdkHTML;
+
+  // MARKET CARDS
+  document.getElementById('marketScroll').innerHTML=marketCards.map(m=>{
+    const col=m.pos?'#10B981':'#EF4444';
+    const pct=((m.cur-m.low)/(m.high-m.low)*100).toFixed(1);
+    return'<div class="market-card"><div class="market-label">'+m.label+'</div><div class="market-val tn">'+m.value+'</div>'+badge(m.pos,m.change+' ('+m.pct+')')+'<div style="margin:12px 0">'+svgSparkArea(180,40,col,m.pts)+'</div><div class="range-bar" style="margin-top:8px"><div class="range-track" style="position:relative;height:4px;background:#E5E7EB;border-radius:2px"><div style="position:absolute;left:0;top:0;height:4px;width:'+pct+'%;background:#3B82F6;border-radius:2px"></div><div style="position:absolute;top:50%;left:'+pct+'%;width:10px;height:10px;border-radius:50%;background:#3B82F6;border:2px solid #fff;transform:translate(-50%,-50%);box-shadow:0 0 0 1px rgba(59,130,246,.2)"></div></div><div class="range-labels tn" style="display:flex;justify-content:space-between;margin-top:6px;font-size:11px;color:#6B7280"><span>'+fmtTRY(m.low)+'</span><span>'+fmtTRY(m.high)+'</span></div></div></div>';
+  }).join('');
+
+  // MOVERS
+  function renderMovers(tab){
+    const el=document.getElementById('moversContent');
+    if(tab==='gainers')el.innerHTML=gainers.map((g,i)=>'<div class="mover-row accent-bar" style="border-left-color:var(--pos);background:'+(i%2?'#FAFAFA':'#fff')+'"><span class="mover-rank">'+(i+1)+'</span><span class="mover-sym">'+g.s+'</span><span class="mover-price tn">'+g.p+'</span>'+svgSpark(60,20,'#10B981',g.sp)+'<span style="text-align:right">'+badge(true,g.c)+'</span></div>').join('');
+    else if(tab==='losers')el.innerHTML=losers.map((g,i)=>'<div class="mover-row accent-bar" style="border-left-color:var(--neg);background:'+(i%2?'#FAFAFA':'#fff')+'"><span class="mover-rank">'+(i+1)+'</span><span class="mover-sym">'+g.s+'</span><span class="mover-price tn">'+g.p+'</span>'+svgSpark(60,20,'#EF4444',g.sp)+'<span style="text-align:right">'+badge(false,g.c)+'</span></div>').join('');
+    else el.innerHTML=volumeL.map((g,i)=>{var col=g.sp[g.sp.length-1]>g.sp[0]?'#10B981':'#EF4444';return'<div class="mover-row accent-bar" style="border-left-color:var(--blue);background:'+(i%2?'#FAFAFA':'#fff')+'"><span class="mover-rank">'+(i+1)+'</span><span class="mover-sym">'+g.s+'</span><span class="mover-price tn">'+g.p+'</span>'+svgSpark(60,20,col,g.sp)+'<span style="text-align:right;font-size:13px;color:var(--text2)" class="tn">'+g.v+'</span></div>'}).join('');
+  }
+  renderMovers('gainers');
+  document.getElementById('moversTabBar').addEventListener('click',function(e){
+    const btn=e.target.closest('.tab-btn');if(!btn)return;
+    this.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+    renderMovers(btn.dataset.tab);
+  });
+
+  // ECO EVENTS
+  document.getElementById('ecoEvents').innerHTML=ecoEvts.map(e=>'<div class="eco-event"><div class="eco-imp" style="background:'+e[3]+'"></div><div><div class="eco-event-name">'+e[0]+'</div><div class="eco-event-date">'+e[1]+'</div><div class="eco-event-imp" style="color:'+e[3]+'">Önem: '+e[2]+'</div></div></div>').join('');
+
+  // MOST READ
+  document.getElementById('mostRead').innerHTML=mostRead.map((m,i)=>'<div class="most-read-item"><span class="most-read-rank tn">'+(i+1)+'</span><div class="most-read-text"><p>'+m[0]+'</p><span style="font-size:12px;color:var(--meta)">'+m[1]+' · <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0"/><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6"/></svg> '+m[2]+' okunma</span></div></div>').join('');
+
+  // EDITOR PICKS
+  document.getElementById('editorPicks').innerHTML=edPicks.map(p=>{
+    const cls=p[1]==='BORSA'?'cat-borsa':p[1]==='ALTIN'?'cat-altin':'cat-ekonomi';
+    return'<div class="editor-pick"><div class="editor-thumb" style="background:url(\''+p[2]+'\') center/cover no-repeat"></div><div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center"><span class="cat '+cls+'">'+p[1]+'</span><p style="font-size:14px;font-weight:500;line-height:1.4;margin:4px 0 3px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">'+p[0]+'</p><span style="font-size:12px;color:var(--meta)">5 saat önce</span></div></div>';
+  }).join('');
+
+  // CATEGORY NEWS
+  let activeCat='Borsa';
+  function renderCat(cat){
+    activeCat=cat;
+    const items=catNews[cat]||[];
+    var imgs=catImages[cat]||[];
+    document.getElementById('catContent').innerHTML='<div class="cat-grid" style="animation:fadeIn .2s">'+items.map((item,idx)=>'<div class="cat-item"><div class="cat-thumb" style="background:url(\''+imgs[idx%imgs.length]+'\') center/cover no-repeat"></div><div class="cat-item-text"><p>'+item[0]+'</p><span style="font-size:13px;color:var(--meta)">'+item[1]+'</span></div></div>').join('')+'</div>';
+    document.getElementById('catLink').textContent='Tüm '+cat+' Haberleri →';
+  }
+  renderCat('Borsa');
+  document.getElementById('catTabBar').addEventListener('click',function(e){
+    const btn=e.target.closest('.tab-btn');if(!btn)return;
+    this.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+    renderCat(btn.dataset.cat);
+  });
+
+  // HEATMAP
+  document.getElementById('heatmap').innerHTML=heatmap.map(h=>{var tc=hmText(h.ch);var sl=h.sec?'<span style="font-size:9px;text-transform:uppercase;color:rgba('+(tc==='#fff'?'255,255,255,.5':'0,0,0,.4')+');position:absolute;top:3px;left:5px;letter-spacing:.3px">'+h.sec+'</span>':'';return'<div class="hm-cell" style="position:relative;grid-column:span '+(h.cs||1)+';grid-row:span '+(h.rs||1)+';background:'+hmColor(h.ch)+';color:'+tc+'" title="'+h.c+'">'+sl+'<span>'+h.c+'</span><span class="tn">'+(h.ch>0?'+':'')+h.ch.toFixed(1)+'%</span></div>'}).join('');
+
+  // STOCK TABLE
+  function renderStocks(filter){
+    const f=filter?filter.toLowerCase():'';
+    document.getElementById('stockBody').innerHTML=stocks.filter(s=>s.c.toLowerCase().includes(f)).map((s,i)=>{
+      const pos=s.ch>0;const pct=((s.cu-s.mn)/(s.mx-s.mn)*100);
+      return'<tr style="border-left:3px solid '+(pos?'var(--pos)':'var(--neg)')+'"><td><div class="stock-code">'+s.c+'</div><div class="stock-name">'+s.n+'</div></td><td class="tn">'+s.p+'</td><td>'+badge(pos,(pos?'+':'')+s.ch.toFixed(2)+'%')+'</td><td class="hide-m tn" style="font-size:13px;color:var(--text2)">'+s.v+'</td><td class="hide-m"><div style="display:flex;align-items:center;gap:4px"><span style="font-size:11px;color:var(--meta)" class="tn">'+s.mn+'</span><div style="flex:1;height:4px;background:#E5E7EB;border-radius:2px;position:relative"><div style="position:absolute;top:50%;left:'+pct+'%;width:8px;height:8px;border-radius:50%;background:'+(pos?'var(--pos)':'var(--neg)')+';transform:translate(-50%,-50%)"></div></div><span style="font-size:11px;color:var(--meta)" class="tn">'+s.mx+'</span></div></td></tr>';
+    }).join('');
+  }
+  renderStocks('');
+  document.getElementById('stockSearch').addEventListener('input',function(){renderStocks(this.value)});
+  document.getElementById('bistTabBar').addEventListener('click',function(e){
+    const btn=e.target.closest('.tab-btn');if(!btn)return;
+    this.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+  });
+
+  // KAP FEED
+  var kapTagColors={"Finansal Tablo":["#EFF6FF","#3B82F6"],"Yönetim Kurulu":["#F3F4F6","#374151"],"Sözleşme":["#ECFDF5","#059669"],"Sermaye Artırımı":["#FFFBEB","#D97706"],"İçeriden":["#F5F3FF","#7C3AED"],"Temettü":["#F0FDFA","#0D9488"],"Özel Durum":["#F3F4F6","#6B7280"],"Yatırım":["#EFF6FF","#2563EB"],"Genel Kurul":["#FFF7ED","#EA580C"]};
+  var kapImpColors={high:"var(--neg)",medium:"#F59E0B",low:"#D1D5DB"};
+  function renderKap(filter){
+    var items=filter==='ALL'?kapItems:kapItems.filter(k=>k[1]===filter);
+    if(!items.length){document.getElementById('kapFeed').innerHTML='<div style="padding:32px;text-align:center;color:var(--text2);font-size:14px">Bu hisse için bildirim bulunamadı</div>';return;}
+    document.getElementById('kapFeed').innerHTML=items.map(function(k){
+      var tc=kapTagColors[k[3]]||["#F3F4F6","#6B7280"];
+      var ic=kapImpColors[k[4]]||"#D1D5DB";
+      return'<div class="kap-row"><div class="kap-imp" style="background:'+ic+'"></div><span class="kap-time">'+k[0]+'</span><span class="kap-code">'+k[1]+'</span><span class="kap-tag" style="background:'+tc[0]+';color:'+tc[1]+'">'+k[3]+'</span><span class="kap-headline">'+k[2]+'</span></div>';
+    }).join('');
+  }
+  renderKap('ALL');
+  document.getElementById('kapPills').addEventListener('click',function(e){
+    var btn=e.target.closest('.kap-pill');if(!btn)return;
+    this.querySelectorAll('.kap-pill').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+    renderKap(btn.dataset.code);
+  });
+
+  // CRYPTO TABLE
+  let cryptoSort={key:null,dir:'asc'};
+  function renderCrypto(){
+    let data=[...cryptoData];
+    if(cryptoSort.key){data.sort((a,b)=>cryptoSort.dir==='asc'?a[cryptoSort.key]-b[cryptoSort.key]:b[cryptoSort.key]-a[cryptoSort.key])}
+    document.getElementById('cryptoBody').innerHTML=data.map((c,i)=>{
+      const col24=c.h24>=0?'#10B981':'#EF4444';const col7=c.d7>=0?'#10B981':'#EF4444';
+      var cIcon;
+      if(c.s==='BTC')cIcon='<div class="crypto-icon" style="background:'+c.col+'"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6h8a3 3 0 0 1 0 6a3 3 0 0 1 0 6h-8"/><path d="M8 6l0 12"/><path d="M8 12l6 0"/><path d="M9 3l0 3"/><path d="M13 3l0 3"/><path d="M9 18l0 3"/><path d="M13 18l0 3"/></svg></div>';
+      else if(c.s==='ETH')cIcon='<div class="crypto-icon" style="background:'+c.col+'"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 12l6 -9l6 9l-6 9z"/><path d="M6 12l6 -3l6 3l-6 2z"/></svg></div>';
+      else cIcon='<div class="crypto-icon" style="background:'+c.col+'">'+c.s[0]+'</div>';
+      return'<tr><td style="text-align:center;font-size:13px;color:var(--text2);font-weight:600">'+c.r+'</td><td>'+cIcon+'</td><td><span style="font-weight:600">'+c.n+'</span> <span style="font-size:12px;color:var(--meta)">'+c.s+'</span></td><td style="text-align:right;font-weight:600" class="tn">'+fmtTRY(c.price)+'</td><td style="text-align:right">'+badge(c.h24>=0,(c.h24>=0?'+':'')+c.h24.toFixed(2)+'%')+'</td><td class="hide-m" style="text-align:right">'+badge(c.d7>=0,(c.d7>=0?'+':'')+c.d7.toFixed(2)+'%')+'</td><td class="hide-m">'+svgSpark(80,28,col7,c.sp)+'</td><td class="hide-m" style="text-align:right;font-size:13px;color:var(--text2)">'+c.mcap+'</td></tr>';
+    }).join('');
+  }
+  renderCrypto();
+  document.querySelectorAll('.crypto-table th[data-sort]').forEach(th=>{
+    th.addEventListener('click',function(){
+      const key=this.dataset.sort;
+      if(cryptoSort.key===key)cryptoSort.dir=cryptoSort.dir==='asc'?'desc':'asc';
+      else{cryptoSort.key=key;cryptoSort.dir='desc'}
+      document.querySelectorAll('.crypto-table th[data-sort]').forEach(h=>h.textContent=h.textContent.replace(/ [▴▾▲▼]/g,''));
+      this.textContent+=cryptoSort.dir==='asc'?' ▴':' ▾';
+      renderCrypto();
+    });
+  });
+
+  // ═══ INTERACTIVITY ═══
+
+  // Sticky header
+  window.addEventListener('scroll',function(){document.getElementById('header').classList.toggle('scrolled',window.scrollY>100)},{passive:true});
+
+  // Ticker pause
+  const ts=document.getElementById('tickerStrip');
+  ts.addEventListener('mouseenter',function(){document.getElementById('tickerTrack').classList.add('paused')});
+  ts.addEventListener('mouseleave',function(){document.getElementById('tickerTrack').classList.remove('paused')});
+
+  // Son Dakika pause
+  const sd=document.getElementById('sonDakikaStrip');
+  sd.addEventListener('mouseenter',function(){document.getElementById('sdkTrack').classList.add('paused')});
+  sd.addEventListener('mouseleave',function(){document.getElementById('sdkTrack').classList.remove('paused')});
+
+  // Nav links
+  document.getElementById('navLinks').addEventListener('click',function(e){
+    const btn=e.target.closest('.nav-link');if(!btn)return;
+    this.querySelectorAll('.nav-link').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+  });
+
+  // Hamburger
+  document.getElementById('hamburgerBtn').addEventListener('click',function(){
+    document.getElementById('drawer').classList.add('open');document.getElementById('drawerOverlay').classList.add('open');
+  });
+  document.getElementById('drawerClose').addEventListener('click',function(){
+    document.getElementById('drawer').classList.remove('open');document.getElementById('drawerOverlay').classList.remove('open');
+  });
+  document.getElementById('drawerOverlay').addEventListener('click',function(){
+    document.getElementById('drawer').classList.remove('open');this.classList.remove('open');
+  });
+  document.getElementById('bottomMenu').addEventListener('click',function(){
+    document.getElementById('drawer').classList.add('open');document.getElementById('drawerOverlay').classList.add('open');
+  });
+
+  // Currency converter
+  function calcCurr(){
+    const amt=parseFloat(document.getElementById('currAmt').value.replace(',','.'))||0;
+    const from=document.getElementById('currFrom').value;
+    const to=document.getElementById('currTo').value;
+    const result=amt*exRates[from]/exRates[to];
+    document.getElementById('currResult').textContent=fmtN(result);
+  }
+  document.getElementById('currAmt').addEventListener('input',calcCurr);
+  document.getElementById('currFrom').addEventListener('change',calcCurr);
+  document.getElementById('currTo').addEventListener('change',calcCurr);
+  document.getElementById('currSwap').addEventListener('click',function(){
+    const f=document.getElementById('currFrom'),t=document.getElementById('currTo');
+    const tmp=f.value;f.value=t.value;t.value=tmp;calcCurr();
+    this.style.transform='rotate(180deg)';setTimeout(()=>this.style.transform='',300);
+  });
+  document.querySelectorAll('.quick-pill[data-pair]').forEach(p=>p.addEventListener('click',function(){
+    document.getElementById('currFrom').value=this.dataset.pair;document.getElementById('currTo').value='TRY';
+    document.getElementById('currAmt').value='1';calcCurr();
+  }));
+
+  // Gold converter
+  let goldReversed=false;
+  function calcGold(){
+    const amt=parseFloat(document.getElementById('goldAmt').value.replace(',','.'))||0;
+    const type=document.getElementById('goldType').value;
+    const rate=goldRates[type]||0;
+    document.getElementById('goldResult').textContent=goldReversed?fmtN(amt/rate):fmtN(amt*rate);
+  }
+  document.getElementById('goldAmt').addEventListener('input',calcGold);
+  document.getElementById('goldType').addEventListener('change',calcGold);
+  document.getElementById('goldSwap').addEventListener('click',function(){
+    goldReversed=!goldReversed;calcGold();
+    this.style.transform='rotate(180deg)';setTimeout(()=>this.style.transform='',300);
+  });
+  document.getElementById('goldPresets').addEventListener('click',function(e){
+    const btn=e.target.closest('.preset-btn');if(!btn)return;
+    this.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+    document.getElementById('goldAmt').value=btn.dataset.g;
+    document.getElementById('goldType').value=btn.dataset.t;calcGold();
+  });
+
+  // SEO toggle
+  document.getElementById('seoToggle').addEventListener('click',function(){
+    const txt=document.getElementById('seoText');
+    const extra=document.getElementById('seoExtra');
+    const fade=document.getElementById('seoFade');
+    const expanded=!txt.classList.contains('collapsed');
+    if(expanded){txt.classList.add('collapsed');extra.style.display='none';fade.style.display='';this.innerHTML='Devamını Oku <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M6 9l6 6l6 -6"/></svg>'}
+    else{txt.classList.remove('collapsed');txt.style.maxHeight='600px';extra.style.display='block';fade.style.display='none';this.innerHTML='Daralt <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M6 15l6 -6l6 6"/></svg>'}
+  });
+});
+</script>
+</body>
+</html>
