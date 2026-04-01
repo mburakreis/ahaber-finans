@@ -137,16 +137,6 @@ a{text-decoration:none;color:inherit}
 .accent-bar{border-left:3px solid;padding-left:8px}
 .tab-panel{display:none}.tab-panel.active{display:block}
 
-/* Ekonomik Takvim widget */
-.eco-card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:24px;display:flex;flex-direction:column}
-.eco-title{display:flex;align-items:center;gap:8px;font-size:18px;font-weight:600;margin-bottom:16px}
-.eco-event{display:flex;align-items:flex-start;gap:12px;padding:14px 0;border-bottom:1px solid var(--border);transition:background .15s;cursor:pointer;border-radius:4px}
-.eco-event:last-child{border-bottom:none}
-.eco-event:hover{background:var(--surface-alt)}
-.eco-imp{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:6px}
-.eco-event-name{font-size:14px;font-weight:600;color:var(--text);line-height:1.3}
-.eco-event-date{font-size:13px;color:var(--text2);margin-top:2px}
-.eco-event-imp{font-size:12px;margin-top:1px}
 
 /* ═══ ANA HABERLER ═══ */
 .ana-haberler{background:var(--surface-alt);padding:48px 0}
@@ -440,10 +430,22 @@ a{text-decoration:none;color:inherit}
         <div id="moversContent"></div>
         <div style="text-align:right;margin-top:12px"><a href="#" style="font-size:14px;color:var(--blue)">Tüm Hisseleri Gör →</a></div>
       </div>
-      <div class="eco-card">
-        <div class="eco-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Yaklaşan Ekonomik Olaylar</div>
-        <div id="ecoEvents" style="flex:1"></div>
-        <a href="#" style="display:block;margin-top:auto;padding-top:12px;font-size:14px;color:var(--blue)">Tüm Takvim →</a>
+      <div class="movers-card" style="padding:0;overflow:hidden">
+        <div style="padding:16px 16px 8px;font-size:14px;font-weight:600;border-bottom:1px solid var(--border)">Ekonomik Takvim</div>
+        <div class="tradingview-widget-container">
+          <div class="tradingview-widget-container__widget"></div>
+          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-economic-calendar.js" async>
+          {
+            "colorTheme": "light",
+            "isTransparent": true,
+            "width": "100%",
+            "height": "400",
+            "locale": "tr",
+            "importanceFilter": "0,1",
+            "countryFilter": "tr,us,eu"
+          }
+          </script>
+        </div>
       </div>
     </div>
   </div>
@@ -624,6 +626,27 @@ a{text-decoration:none;color:inherit}
         <tbody id="stockBody"></tbody>
       </table>
     </div>
+    <div style="margin-top:24px;border:1px solid var(--border);border-radius:12px;overflow:hidden">
+      <div style="padding:16px 16px 8px;font-size:14px;font-weight:600;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px">
+        <span>Piyasa Haberleri</span>
+        <span style="font-size:12px;color:var(--meta);font-weight:400">TradingView</span>
+      </div>
+      <div class="tradingview-widget-container">
+        <div class="tradingview-widget-container__widget"></div>
+        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-timeline.js" async>
+        {
+          "feedMode": "market",
+          "market": "stock",
+          "isTransparent": true,
+          "displayMode": "compact",
+          "width": "100%",
+          "height": "350",
+          "colorTheme": "light",
+          "locale": "tr"
+        }
+        </script>
+      </div>
+    </div>
     <div style="text-align:right;margin-top:12px"><a href="#" style="font-size:14px;color:var(--blue)">Tüm Hisseleri Gör →</a></div>
   </div>
 </section>
@@ -749,7 +772,6 @@ const catLabel={Borsa:"BORSA",Emtia:"EMTİA",Altin:"ALTIN",Kripto:"KRİPTO",Ekon
 const heatmap=[{c:"GARAN",ch:2.1,cs:2,sec:"BANKACILIK"},{c:"AKBNK",ch:-0.8,cs:2,sec:""},{c:"YKBNK",ch:1.5,cs:1,sec:""},{c:"THYAO",ch:3.7,cs:2,rs:2,sec:"SANAYİ"},{c:"SISE",ch:1.2,cs:1,sec:""},{c:"TUPRS",ch:-0.5,cs:1,sec:""},{c:"EREGL",ch:-3.1,cs:1,sec:""},{c:"TOASO",ch:1.1,cs:1,sec:""},{c:"ASELS",ch:4.8,cs:1,sec:"TEKNOLOJİ"},{c:"TCELL",ch:0.3,cs:1,sec:""},{c:"TTKOM",ch:-1.2,cs:1,sec:""},{c:"KCHOL",ch:2.4,cs:1,sec:"HOLDİNG"},{c:"SAHOL",ch:0.9,cs:1,sec:""},{c:"SASA",ch:-1.8,cs:1,sec:""},{c:"PETKM",ch:-2.9,cs:1,sec:""}];
 const stocks=[{c:"THYAO",n:"Türk Hava Yolları",p:"314,25",ch:3.67,v:"1,8B",mn:302,mx:316,cu:314.25},{c:"GARAN",n:"Garanti BBVA",p:"128,50",ch:2.10,v:"2,4B",mn:124,mx:129,cu:128.5},{c:"ASELS",n:"ASELSAN",p:"82,45",ch:4.82,v:"980M",mn:78,mx:83,cu:82.45},{c:"SISE",n:"Şişecam",p:"58,90",ch:3.21,v:"650M",mn:56,mx:59,cu:58.9},{c:"AKBNK",n:"Akbank",p:"61,30",ch:-1.45,v:"1,5B",mn:60,mx:63,cu:61.3},{c:"EREGL",n:"Ereğli Demir Çelik",p:"48,52",ch:-3.15,v:"890M",mn:47,mx:51,cu:48.52},{c:"KCHOL",n:"Koç Holding",p:"215,60",ch:2.41,v:"420M",mn:210,mx:217,cu:215.6},{c:"TUPRS",n:"Tüpraş",p:"187,30",ch:2.95,v:"380M",mn:182,mx:188,cu:187.3},{c:"TCELL",n:"Turkcell",p:"76,40",ch:-2.34,v:"520M",mn:75,mx:79,cu:76.4},{c:"SAHOL",n:"Sabancı Holding",p:"92,15",ch:-1.98,v:"340M",mn:91,mx:95,cu:92.15},{c:"BIMAS",n:"BİM Mağazaları",p:"445,80",ch:1.24,v:"310M",mn:438,mx:448,cu:445.8},{c:"FROTO",n:"Ford Otosan",p:"1.285,00",ch:0.78,v:"190M",mn:1270,mx:1292,cu:1285},{c:"KOZAA",n:"Koza Altın",p:"142,60",ch:2.85,v:"280M",mn:138,mx:144,cu:142.6},{c:"VESTL",n:"Vestel Elektronik",p:"34,18",ch:-1.72,v:"220M",mn:33,mx:35,cu:34.18},{c:"TTKOM",n:"Türk Telekom",p:"52,75",ch:-0.94,v:"410M",mn:52,mx:54,cu:52.75}];
 const kapItems=[["14:32","THYAO","Türk Hava Yolları yönetim kurulu kararı açıklandı","Yönetim Kurulu","high"],["14:18","GARAN","Garanti BBVA 2026 Q1 finansal tabloları","Finansal Tablo","high"],["13:55","ASELS","ASELSAN yeni savunma sözleşmesi imzaladı","Sözleşme","high"],["13:41","SISE","Şişecam kapasite artırım yatırımı duyurusu","Yatırım","medium"],["13:28","TUPRS","Tüpraş rafineri bakım takvimi güncellendi","Özel Durum","low"],["13:15","KCHOL","Koç Holding bağlı ortaklık pay alımı bildirimi","İçeriden","medium"],["12:58","EREGL","Erdemir üretim verileri açıklaması","Özel Durum","low"],["12:44","AKBNK","Akbank sermaye yeterliliği rasyosu bildirimi","Finansal Tablo","medium"],["12:30","BIMAS","BİM mağaza açılış bilgilendirmesi","Yatırım","low"],["12:12","SAHOL","Sabancı Holding özel durum açıklaması","Özel Durum","medium"]];
-const ecoEvts=[["TCMB Faiz Kararı","3 Nisan, 14:00","Yüksek","#EF4444"],["TÜİK Enflasyon Verisi","4 Nisan, 10:00","Orta","#F59E0B"],["Sanayi Üretim Endeksi","7 Nisan, 10:00","Düşük","#10B981"],["ABD Tarım Dışı İstihdam","4 Nisan, 15:30","Yüksek","#EF4444"]];
 let cryptoData=[
   {r:1,n:"Bitcoin",s:"BTC",col:"#F7931A",price:2845000,h24:2.34,d7:5.67,mcap:"54,2T TL",mv:54200,sp:[30,32,34,31,36,38,35,40,42,44,46,48]},
   {r:2,n:"Ethereum",s:"ETH",col:"#627EEA",price:128450,h24:1.87,d7:3.21,mcap:"15,8T TL",mv:15800,sp:[22,24,23,26,25,28,27,30,29,32,31,33]},
@@ -832,9 +854,6 @@ document.addEventListener('DOMContentLoaded',function(){
     this.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
     renderMovers(btn.dataset.tab);
   });
-
-  // ECO EVENTS
-  document.getElementById('ecoEvents').innerHTML=ecoEvts.map(e=>'<div class="eco-event"><div class="eco-imp" style="background:'+e[3]+'"></div><div><div class="eco-event-name">'+e[0]+'</div><div class="eco-event-date">'+e[1]+'</div><div class="eco-event-imp" style="color:'+e[3]+'">Önem: '+e[2]+'</div></div></div>').join('');
 
   // MOST READ
   document.getElementById('mostRead').innerHTML=mostRead.map((m,i)=>'<div class="most-read-item"><span class="most-read-rank tn">'+(i+1)+'</span><div class="most-read-text"><p>'+m[0]+'</p><span style="font-size:12px;color:var(--meta)">'+m[1]+' · <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0"/><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6"/></svg> '+m[2]+' okunma</span></div></div>').join('');
